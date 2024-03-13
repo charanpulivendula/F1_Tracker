@@ -1,0 +1,42 @@
+.App {
+  text-align: center;
+  width: auto;
+}
+
+ul li {
+  margin-left: 60px;
+}
+
+ul li a{
+  font-size: x-large;
+}
+
+.visible-only-lg {
+  display: none; 
+}
+
+.visible-only-sm {
+  display: none; 
+}
+
+.visible-only-md {
+  display: none; 
+}
+
+@media (min-width: 1280px) {
+  .visible-only-lg {
+    display:flow-root;
+  }
+}
+
+@media (min-width: 768px) {
+  .visible-only-md {
+    display:flow-root;
+  }
+}
+
+@media (max-width: 767px) {
+  .visible-only-sm {
+    display:flex;
+  }
+}
