@@ -3,14 +3,14 @@
 @tailwind utilities;
 @font-face {
   font-family: "archivo";
-  src: url(..\\fonts\\Archivo.ttf);
+  src: url(../fonts/Archivo.ttf);
   font-weight: normal;
   font-size: normal;
 }
 
 @font-face {
   font-family: "michroma";
-  src: url(..\\fonts\\Michroma.ttf);
+  src: url(../fonts/Michroma.ttf);
   font-weight: normal;
   font-size: normal;
 }
