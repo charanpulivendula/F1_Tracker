@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleMap, LoadScript, Marker, useJsApiLoader } from '@react-google-maps/api';
 import racingmap from '../Assets/racing_map.png';
-import {DarkModeStyles} from '../Static/DarkModeStyles';
+import GMap from './GMap';
 
 const libraries = ['places'];
 
@@ -13,11 +13,6 @@ const RacingMap = () => {
   const handleMapChange = (event) => {
     setMapType(event.target.value);
   };
-
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: process.env.REACT_APP_GOOGLEAPIKEY
-  });
 
   const racingMap = (
     <div className=''>
@@ -37,24 +32,8 @@ const RacingMap = () => {
     </div>
   );
 
-  const googleMap = (
-    <div className=''>
-      {isLoaded ? (
-        <GoogleMap
-          mapContainerStyle={{ width: "650px", height: "730px" }}
-          zoom={19}
-          center={{ lat: 39.18990, lng: -86.52281}}
-          options={{ styles: DarkModeStyles }}
-        >
-          <Marker position={{ lat: 39.1898326, lng: -86.5254004 }} />
-        </GoogleMap>
-      ) : (
-        <div>Loading Google Map...</div>
-      )}
-    </div>
-  );
 
-  const selectedMap = mapType === 'racing' ? racingMap : googleMap;
+  const selectedMap = mapType === 'racing' ? racingMap : <GMap/>;
 
   return (
     <div className='flex-col w-4/5 ml-10 h-full'>
