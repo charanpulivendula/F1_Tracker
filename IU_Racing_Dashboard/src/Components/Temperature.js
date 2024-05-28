@@ -4,6 +4,10 @@ import steering from '../Assets/steering.png';
 
 const Temperature = () => {
   const [angle, setAngle] = useState(45);
+  const [tempLT,setTempLT] = useState(0);
+  const [tempLB,setTempLB] = useState(0);
+  const [tempRT,setTempRT] = useState(0);
+  const [tempRB,setTempRB] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -14,7 +18,14 @@ const Temperature = () => {
 
   return (
     <div className='flex'>
-      <div className='w-1/4'></div>
+      <div className='flex flex-col w-1/4 justify-between pt-8 pb-9'>
+          <div className='text text-lg'>
+              {tempLT}ºC
+          </div>
+          <div className='text text-lg'>
+              {tempLB}ºC
+          </div>
+      </div>
       <div className='w-1/2 relative'>
         <img src={car_temp} alt='car' width={120} height={280} className='' />
         <div className='absolute top-[36%] left-[34%] flex flex-col items-center'>
@@ -26,10 +37,17 @@ const Temperature = () => {
             alt='steering'
             style={{ transform: `rotate(${angle}deg)` }}
           />
-          <div className='text-lg text-white'>{angle}º</div>
+          <div className='text-lg text-white font-bold text'>{angle}º</div>
         </div>
       </div>
-      <div className='w-1/4'></div>
+      <div className='w-1/4 flex flex-col justify-between pt-8 pb-9'>
+          <div className='text text-lg'>
+              {tempRT}ºC
+          </div>
+          <div className='text text-lg'>
+              {tempRB}ºC
+          </div>
+      </div>
     </div>
   );
 }

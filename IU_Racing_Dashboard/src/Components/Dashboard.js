@@ -8,8 +8,8 @@ import Overview from "./Overview";
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-row w-full place-items-center">
-      <div className=" flex">
+    <div className="flex flex-row w-full ">
+      <div className=" flex flex-row justify-between">
         {/* <Darkmode/>
         <Connection/> */}
         <Overview/>

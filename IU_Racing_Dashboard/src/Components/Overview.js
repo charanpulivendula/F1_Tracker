@@ -35,7 +35,7 @@ const Overview = ()=>{
         return () => clearInterval(id);
       }, []);
     return (
-        <div className='w-1/3 flex-col'>
+        <div className=' flex-col w-[20%]'>
             <img
             className="flex mx-[35%]"
             alt="Vector"

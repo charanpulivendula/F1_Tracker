@@ -4,7 +4,7 @@ import Temperature from './Temperature'
 
 const TempState = () => {
   return (
-    <div className='flex'>
+    <div className='flex space-x-10'>
         <div className='w-1/2'>
             <States/>
         </div>

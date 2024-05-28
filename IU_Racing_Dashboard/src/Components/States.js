@@ -1,13 +1,15 @@
-import React from 'react'
+import React from 'react';
 import { useState, useEffect } from 'react';
 import samosa from '../Assets/samosa.png';
 import circle from '../Assets/Circle.png';
 import wrong from '../Assets/wrong.png';
+import '../Styles/states.css';
 
 const States = () => {
-  const [sysState,setSysState] = useState(1);
-  const [heartbeat,setHeartbeat] = useState(wrong);
-  const [ctState,setCtState] = useState(8);
+  const [sysState, setSysState] = useState(1);
+  const [heartbeat, setHeartbeat] = useState(wrong);
+  const [ctState, setCtState] = useState(8);
+
   const CTStateMap = new Map([
     [1, 'Computer is on'],
     [2, 'After car engine is on'],
@@ -43,9 +45,9 @@ const States = () => {
   ]);
 
   const HeartbeatMap = new Map([
-    [samosa,'Wrong estimation  & localization'],
-    [circle,'Perfect condition'],
-    [wrong,'All estimation, location, localization are wrong']
+    [samosa, 'Wrong estimation & localization'],
+    [circle, 'Perfect condition'],
+    [wrong, 'All estimation, location, localization are wrong']
   ]);
 
   useEffect(() => {
@@ -65,47 +67,47 @@ const States = () => {
 
   return (
     <div className='flex-col'>
-        <div className=''>
-          <div className=' flex justify-start'>
-            CT state
+      <div className=''>
+        <div className='flex justify-start'>
+          CT state
+        </div>
+        <div className='flex place-items-center justify-center space-x-2 p-1'>
+          <div className='state-box number font-bold text-[24px]'>
+            {ctState}
           </div>
-          <div className='flex place-items-center justify-center p-1'>
-            <div className='w-1/4 bg-slate-900 h-16 flex items-center justify-center number text-[24pt] mx-3'>
-              {ctState}
-            </div>
-            <div className='w-3/4 bg-slate-900 h-16 flex items-center justify-center'>
-              {CTStateMap.get(ctState) || 'Unknown CTState'}
-            </div>
+          <div className='state-info-box text'>
+            {CTStateMap.get(ctState) || 'Unknown CTState'}
           </div>
         </div>
-        <div className=''>
-          <div className=' flex justify-start'>
-            Heartbeat
+      </div>
+      <div className=''>
+        <div className='flex justify-start'>
+          Heartbeat
+        </div>
+        <div className='flex place-items-center justify-center space-x-2 p-1'>
+          <div className='state-box number'>
+            <img src={heartbeat} alt='' width={30} height={30} />
           </div>
-          <div className='flex place-items-center justify-center p-1'>
-            <div className='w-1/4 bg-slate-900 h-16 flex items-center justify-center number text-[24pt] mx-3'>
-                <img src={heartbeat} alt='' width={40} height={40}/>
-            </div>
-            <div className='w-3/4 bg-slate-900 h-16 flex items-center justify-center'>
-                {HeartbeatMap.get(heartbeat) || 'unknown'}
-            </div>
+          <div className='state-info-box text'>
+            {HeartbeatMap.get(heartbeat) || 'Unknown'}
           </div>
         </div>
-        <div className=''>
-          <div className=' flex justify-start'>
-             System
+      </div>
+      <div className=''>
+        <div className='flex justify-start'>
+          System
+        </div>
+        <div className='flex place-items-center justify-center space-x-2 p-1'>
+          <div className='state-box number font-bold text-[24px]'>
+            {sysState}
           </div>
-          <div className='flex place-items-center justify-center p-1'>
-            <div className='w-1/4 bg-slate-900 h-16 flex items-center justify-center number text-[24pt] mx-3'>
-                {sysState}
-            </div>
-            <div className='w-3/4 bg-slate-900 h-16 flex items-center justify-center'>
-                {SysStateMap.get(sysState) || 'Unknown SysState'}   
-            </div>
+          <div className='state-info-box text'>
+            {SysStateMap.get(sysState) || 'Unknown SysState'}
           </div>
         </div>
+      </div>
     </div>
   )
 }
 
-export default States
+export default States;

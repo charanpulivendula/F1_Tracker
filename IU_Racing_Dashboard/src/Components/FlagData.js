@@ -60,7 +60,7 @@ const FlagData = () => {
             <img src={trackflag} alt="Track Flag" width={70} height={70}/>
             <div className='flex-col p-4'>
                 <p className='flex justify-start'>Track Flag</p>
-                <p className='flex justify-start'>:{msg}</p>
+                {/* <p className='flex justify-start'>:{msg}</p> */}
             </div>
         </div>
         <div className='flex my-4'>
