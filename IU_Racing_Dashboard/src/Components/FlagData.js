@@ -6,51 +6,63 @@ import purple from '../Assets/Track Flag Purple.png';
 import blue from '../Assets/Track Flag blue.png';
 import orange from '../Assets/Track Flag orange.png';
 import grey from '../Assets/track-flag-grey.png';
+import { io } from 'socket.io-client';
 
 const FlagData = () => {
     const [trackflag,setTrackFlag] = useState(red);
     const [msg,setMsg] = useState("No team can race");
     const [vehicleflag,setVehicleFlag] = useState(purple);
     const [intervalId, setIntervalId] = useState(null);
-  const Track_Flag_List = [
-    {
-        flag:green,
-        msg: 'Full speed mode'
-    },
-    {
-        flag:yellow,
-        msg:'Low speed mode'
-    },
-    {
-        flag:red,
-        msg:'No team can race'
-    }
+  const Track_Flag_Map = new Map([
+    [
+        'green',green,
+        
+    ],
+    [
+        'yellow',yellow,
+        
+    ],
+    [
+        'red',red,
+    ]
     
-  ];
-  const Vehicle_Flag_List = [
-    purple,yellow,blue,orange,grey
-  ];
+  ]);
+  const Track_Flag_Msg_Map=new Map([
+      [green, 'Full speed mode'],
+      [yellow,'Low speed mode'],
+      [red,'No team can race']
+  ]);
+
+  const Vehicle_Flag_Map = new Map([
+    ['purple',purple],
+    ['yellow',yellow],
+    ['blue',blue],
+    ['orange',orange],
+    ['grey',grey]
+  ]);
+
   useEffect(() => {
-    let index1 = 0;
-    let index2=0
-    const changeTrackFlag = () => {
-      const { flag, msg } = Track_Flag_List[index1];
-      setTrackFlag(flag);
-      setMsg(msg);
-      index1 = (index1 + 1) % Track_Flag_List.length;
-    };
+    const flagSocket = io("http://localhost:8080");
 
-    const changeVehicleFlag = () => {
-      setVehicleFlag(Vehicle_Flag_List[index2]);
-      index2 = (index2 + 1) % Vehicle_Flag_List.length;
-    };
+    flagSocket.on('track_flag', (flag) => {
+      setTrackFlag(Track_Flag_Map.get(flag));
+      setMsg(Track_Flag_Msg_Map.get(trackflag) || "Unknown state");
+    });
 
-    const intervalIdTrack = setInterval(changeTrackFlag, 5000); // Change track flag every 5 seconds
-    const intervalIdVehicle = setInterval(changeVehicleFlag, 3000); // Change vehicle flag every 3 seconds
+    flagSocket.on('connect',()=>{
+      console.log('flags connected to server');
+    });
+
+    flagSocket.on('disconnect',()=>{
+      console.log('flags disconnected from server');
+    });
+
+    flagSocket.on('vehicle_flag', (flag) => {
+      setVehicleFlag(Vehicle_Flag_Map.get(flag));
+    });
 
     return () => {
-      clearInterval(intervalIdTrack);
-      clearInterval(intervalIdVehicle);
+      flagSocket.disconnect();
     };
   }, []);
 

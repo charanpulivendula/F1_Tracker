@@ -1,54 +1,52 @@
+import React, { useState, useEffect } from 'react';
 import progress_circle from '../Assets/progress_circle.svg';
 import marker from '../Assets/marker.svg';
 import line from '../Assets/line_speedometer.svg';
 import ChangingProgressProvider from './ChangingProgressProvider';
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { useState, useEffect } from 'react';
+import { io } from "socket.io-client";
 
 const Speedometer = () => {
     const [speed, setSpeed] = useState(87);
     const [rotation, setRotation] = useState(0);
-    const [intervalId, setIntervalId] = useState(null);
-    const [minSpeed, setMinSpeed] = useState(10);
+    const [minSpeed, setMinSpeed] = useState(300);
     const [maxSpeed, setMaxSpeed] = useState(10);
-    const [RPM,setRPM] = useState(0);
+    const [RPM, setRPM] = useState(0);
 
     useEffect(() => {
-        // Calculate the rotation angle based on the speed
+        const speedSocket = io(process.env.REACT_APP_SERVER_URL);
+        speedSocket.on('connect', () => {
+            console.log('Speedometer Connected to server');
+        });
+
+        speedSocket.on('disconnect', () => {
+            console.log('Speedometer Disconnected from server');
+        });
+
+        speedSocket.on('speed', (data) => {
+            setSpeed(data.current);
+            setMinSpeed(Math.min(data.min, minSpeed));
+            setMaxSpeed(Math.max(data.max, maxSpeed));
+        });
+
+        speedSocket.on('rpm', (data) => {
+            setRPM(data);
+        });
+
+        return () => {
+            speedSocket.disconnect();
+        };
+    }, []);
+
+    useEffect(() => {
         const maxSpeedValue = 300;
         const minRotation = 212; // Rotation angle at 0 km/h
         const maxRotation = 572; // Rotation angle at 300 km/h
         const speedRatio = speed / maxSpeedValue;
         const rotationAngle = minRotation + (maxRotation - minRotation) * speedRatio;
         setRotation(rotationAngle);
-
-        // Update minimum and maximum speed based on current speed
-        const calculatedMinSpeed = Math.min(speed, minSpeed);
-        const calculatedMaxSpeed = Math.max(speed, maxSpeed);
-        setMinSpeed(calculatedMinSpeed);
-        setMaxSpeed(calculatedMaxSpeed);
     }, [speed]);
-
-    useEffect(() => {
-        // Update speed with random values every 2 seconds
-        const updateSpeed = () => {
-            const randomSpeed = Math.floor(Math.random() * 301); // Random speed between 0 and 300 km/h
-            setSpeed(randomSpeed);
-        };
-        const updateRPM = ()=>{
-            const randomRPM = Math.floor(Math.random() * 10000);
-            setRPM(randomRPM);
-        }   
-        const intervalId = setInterval(updateSpeed, 2000); // Update speed every 2 seconds
-        const intervalId1=setInterval(updateRPM,1000);
-
-
-        return () => {
-            clearInterval(intervalId); 
-            clearInterval(intervalId1);// Clear interval on component unmount
-        };
-    }, []);
 
     return (
         <div className='flex'>

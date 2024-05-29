@@ -8,15 +8,8 @@ import {
   import "react-circular-progressbar/dist/styles.css";
 import progress_circle from '../Assets/progress_circle.svg';
 
-const ControlMeter = ({ name, color, maxValue }) => {
-  const [value, setValue] = useState(Math.floor(Math.random() * maxValue) + 1);
+const ControlMeter = ({ name, color, maxValue,value }) => {
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setValue(Math.floor(Math.random() * maxValue) + 1);
-    }, 2000); // Update value every second
-    return () => clearInterval(interval);
-  }, [maxValue]);
   return (
     
     <div className="relative w-[100px] h-[100px] bg-[100%_100%]">

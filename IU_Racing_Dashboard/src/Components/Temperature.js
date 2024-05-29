@@ -1,13 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import car_temp from '../Assets/car_temp.png';
 import steering from '../Assets/steering.png';
+import { io } from "socket.io-client";
+import { useCallback } from 'react';
 
 const Temperature = () => {
   const [angle, setAngle] = useState(45);
-  const [tempLT,setTempLT] = useState(0);
-  const [tempLB,setTempLB] = useState(0);
-  const [tempRT,setTempRT] = useState(0);
-  const [tempRB,setTempRB] = useState(0);
+  const [tempRL,setTempRL] = useState(0);
+  const [tempFL,setTempFL] = useState(0);
+  const [tempRR,setTempRR] = useState(0);
+  const [tempFR,setTempFR] = useState(0);
+
+  
+  useEffect(() => {
+    
+    const tempSocket = io(process.env.REACT_APP_SERVER_URL);
+    tempSocket.on('connect', () => {
+      console.log('Temp Connected to server');
+    });
+
+    tempSocket.on('disconnect', () => {
+      console.log('Temp Disconnected from server');
+    });
+
+    tempSocket.on('tire_temp', (data) => {
+      setTempRL(data.rear_left);
+      setTempFL(data.front_left);
+      setTempRR(data.rear_right);
+      setTempFR(data.front_right);
+    });
+    return () => {
+      tempSocket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAngle((prevAngle) => Math.floor(Math.random() * 360)); // Rotate by random degrees every second
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -20,15 +52,15 @@ const Temperature = () => {
     <div className='flex'>
       <div className='flex flex-col w-1/4 justify-between pt-8 pb-9'>
           <div className='text text-lg'>
-              {tempLT}ºC
+              {tempRL}ºC
           </div>
           <div className='text text-lg'>
-              {tempLB}ºC
+              {tempFL}ºC
           </div>
       </div>
       <div className='w-1/2 relative'>
         <img src={car_temp} alt='car' width={120} height={280} className='' />
-        <div className='absolute top-[36%] left-[34%] flex flex-col items-center'>
+        <div className='absolute top-[36%] left-[32%] flex flex-col items-center'>
           <img
             src={steering}
             height={36}
@@ -42,10 +74,10 @@ const Temperature = () => {
       </div>
       <div className='w-1/4 flex flex-col justify-between pt-8 pb-9'>
           <div className='text text-lg'>
-              {tempRT}ºC
+              {tempRR}ºC
           </div>
           <div className='text text-lg'>
-              {tempRB}ºC
+              {tempFR}ºC
           </div>
       </div>
     </div>

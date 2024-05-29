@@ -8,7 +8,7 @@ const libraries = ['places'];
 
 
 const RacingMap = () => {
-  const [mapType, setMapType] = useState('racing'); // Default to racing map
+  const [mapType, setMapType] = useState('google'); // Default to racing map
 
   const handleMapChange = (event) => {
     setMapType(event.target.value);

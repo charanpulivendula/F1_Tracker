@@ -1,5 +1,5 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { io } from 'socket.io-client';
 import samosa from '../Assets/samosa.png';
 import circle from '../Assets/Circle.png';
 import wrong from '../Assets/wrong.png';
@@ -50,19 +50,38 @@ const States = () => {
     [wrong, 'All estimation, location, localization are wrong']
   ]);
 
+  const HeartbeatImages = new Map([
+    ['samosa',samosa],
+    ['wrong',wrong],
+    ['circle',circle]
+  ])
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      const randomSysState = Math.floor(Math.random() * 15) + 1;
-      const randomCtState = Math.floor(Math.random() * 12) + 1;
-      const heartbeatImages = [samosa, circle, wrong];
-      const randomHeartbeat = heartbeatImages[Math.floor(Math.random() * heartbeatImages.length)];
+    const stateSocket = io(process.env.REACT_APP_SERVER_URL);
 
-      setSysState(randomSysState);
-      setCtState(randomCtState);
-      setHeartbeat(randomHeartbeat);
-    }, 6000);
+    stateSocket.on('connect', () => {
+      console.log('states Connected to server');
+    });
 
-    return () => clearInterval(interval);
+    stateSocket.on('disconnect', () => {
+      console.log('states Disconnected from server');
+    });
+
+    stateSocket.on('sys_state', (data) => {
+      setSysState(data);
+    });
+
+    stateSocket.on('heartbeat', (data) => {
+      setHeartbeat(HeartbeatImages.get(data) || wrong);
+    });
+
+    stateSocket.on('ct_state', (data) => {
+      setCtState(data);
+    });
+
+    return () => {
+      stateSocket.disconnect();
+    };
   }, []);
 
   return (
@@ -107,7 +126,7 @@ const States = () => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default States;
