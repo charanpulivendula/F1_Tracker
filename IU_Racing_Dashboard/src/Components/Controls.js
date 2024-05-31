@@ -43,13 +43,13 @@ const Controls = () => {
   return (
     <div className='flex ml-8 py-4 space-x-4'>
       <div className='w-1/4'>
-        <ControlMeter name='Throttle' color='#2B64FF' maxValue={20} value={throttle} />
+        <ControlMeter name='Throttle' color='#2B64FF' maxValue={310} value={throttle} />
       </div>
       <div className='w-1/4'>
         <ControlMeter name='Brake' color='#AE2BFF' maxValue={10} value={brake} />
       </div>
       <div className='w-1/4'>
-        <ControlMeter name='Gear' color='#FFFFFF' maxValue={7} value={gear} />
+        <ControlMeter name='Gear' color='#FFFFFF' maxValue={6} value={gear} />
       </div>
       <div className='w-1/4'>
         <ControlMeter name='Comm.' color='#B0B0B0' maxValue={100} value={comm} />

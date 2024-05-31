@@ -44,7 +44,7 @@ const FlagData = () => {
   useEffect(() => {
     const flagSocket = io("http://localhost:8080");
 
-    flagSocket.on('track_flag', (flag) => {
+    flagSocket.on('trackFlag', (flag) => {
       setTrackFlag(Track_Flag_Map.get(flag));
       setMsg(Track_Flag_Msg_Map.get(trackflag) || "Unknown state");
     });
@@ -57,7 +57,7 @@ const FlagData = () => {
       console.log('flags disconnected from server');
     });
 
-    flagSocket.on('vehicle_flag', (flag) => {
+    flagSocket.on('vehicleFlag', (flag) => {
       setVehicleFlag(Vehicle_Flag_Map.get(flag));
     });
 

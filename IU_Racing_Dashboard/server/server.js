@@ -13,6 +13,33 @@ const socketIO = require('socket.io');
 const RacingData = proto.lookupType('RacecarData');
 const os = require('os');
 let latestData;
+const Track_Flag_List = ['green', 'yellow', 'red'];
+const Vehicle_Flag_List = ['purple', 'yellow', 'blue', 'orange', 'grey'];
+const heartbeatImages = ['samosa', 'circle', 'wrong']; 
+
+const TrackCondition = {
+  0: "null",
+  3: "red",
+  9: "yellow",
+  1: "green",
+  37: "wavinggreen",
+  4: "checkered",
+  255: "default"
+};
+
+const VehicleFlagObj = {
+  0: "null",
+  25: "orange",
+  2: "blue",
+  4: "grey",
+  7: "yellow",
+  34: "stop",
+  32: "purple",
+  33: "enginekill",
+  36: "attacker",
+  35: "defender",
+  255: "default"
+};
 
 app.use(cors());
 
@@ -79,11 +106,46 @@ udpServer.on('message', (msg) => {
     enums: String,
     bytes: String,
   });
-  console.log(`Received data: ${latestData.gear}`);
-  Object.keys(latestData).forEach(field => {
-    io.emit(field, latestData[field]);
-  });
+  if (latestData.speed!=null && latestData.speed.current!=0){
+    latestData.speed.current=Math.floor(latestData.speed.current);
+    io.emit('currentspeed',latestData.speed.current);
+  }
+  if(latestData.rpm!=0){
+    io.emit('rpm',latestData.rpm);
+  }
+  if(latestData.throttle!=0){
+    io.emit('throttle',Math.floor(latestData.throttle));
+  }
+  if(latestData.gear!=0){
+    io.emit('gear',latestData.gear);
+  }
+  if(latestData.tireTemp && !checkNullValues(latestData.tireTemp))
+  { 
+    io.emit('tireTemp',JSON.stringify(latestData.tireTemp));
+  }
+  if(latestData.trackFlag!=0){
+    io.emit('trackFlag',TrackCondition[latestData.trackFlag]);
+  }
+  if(latestData.vehicleFlag!=0){
+    io.emit('vehicleFlag',VehicleFlagObj[latestData.vehicleFlag]);
+  }
+  // console.log(JSON.stringify(latestData));
+  // Object.keys(latestData).forEach(field => {
+  //   io.emit(field, latestData[field]);
+  // });
+  if(latestData.steeringAngle!=0){
+    io.emit('steeringAngle',Math.floor(latestData.steeringAngle));
+  }
 });
+
+const checkNullValues = (object)=>{
+  Object.entries(object).forEach(([key,value])=>{
+    if(value===null){
+      return true;
+    }
+  });
+  return false;
+}
 
 udpServer.on('listening', () => {
   const address = udpServer.address();
@@ -102,9 +164,7 @@ setInterval(() => {
   });
 }, 5000);
 
-const Track_Flag_List = ['green', 'yellow', 'red'];
-const Vehicle_Flag_List = ['purple', 'yellow', 'blue', 'orange', 'grey'];
-const heartbeatImages = ['samosa', 'circle', 'wrong']; 
+
 
 const generateRandomData = () => {
   return {
@@ -113,25 +173,25 @@ const generateRandomData = () => {
       min: Math.floor(Math.random() * 50),
       current: Math.floor(Math.random() * 301)
     },
-    tire_temp: {
-      front_right: Math.floor(Math.random() * 100),
-      front_left: Math.floor(Math.random() * 100),
-      rear_right: Math.floor(Math.random() * 100),
-      rear_left: Math.floor(Math.random() * 100)
-    },
-    throttle: Math.floor(Math.random() * 20),
+    // tire_temp: {
+    //   front_right: Math.floor(Math.random() * 100),
+    //   front_left: Math.floor(Math.random() * 100),
+    //   rear_right: Math.floor(Math.random() * 100),
+    //   rear_left: Math.floor(Math.random() * 100)
+    // },
+    // throttle: Math.floor(Math.random() * 20),
     brake: Math.floor(Math.random() * 10),
-    gear: Math.floor(Math.floor(Math.random() * 7)),
+    // gear: Math.floor(Math.floor(Math.random() * 7)),
     ct_state: Math.floor(Math.random() * 12) + 1, // Assuming ctState values range from 1 to 12
     heartbeat: heartbeatImages[Math.floor(Math.random() * heartbeatImages.length)],
     comm: Math.floor(Math.random() * 100),
     system: 'Active',
     rpm: Math.floor(Math.random() * 8000),
-    steering_angle: (Math.random() * 2 - 1) * 45,
+    // steering_angle: (Math.random() * 2 - 1) * 45,
     disconnected: false,
     laps: Math.floor(Math.random() * 70),
-    track_flag: Track_Flag_List[Math.floor(Math.random() * Track_Flag_List.length)],
-    vehicle_flag: Vehicle_Flag_List[Math.floor(Math.random() * Vehicle_Flag_List.length)],
+    // track_flag: Track_Flag_List[Math.floor(Math.random() * Track_Flag_List.length)],
+    // vehicle_flag: Vehicle_Flag_List[Math.floor(Math.random() * Vehicle_Flag_List.length)],
     planning_trajectory: {
       x_m: Array.from({ length: 5 }, () => Math.random() * 1000),
       y_m: Array.from({ length: 5 }, () => Math.random() * 1000),

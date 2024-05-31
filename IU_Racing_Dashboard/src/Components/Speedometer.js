@@ -24,12 +24,15 @@ const Speedometer = () => {
             console.log('Speedometer Disconnected from server');
         });
 
-        speedSocket.on('speed', (data) => {
-            setSpeed(data.current);
-            setMinSpeed(Math.min(data.min, minSpeed));
-            setMaxSpeed(Math.max(data.max, maxSpeed));
-        });
-
+        // speedSocket.on('speed', (data) => {
+        //     setSpeed(data.current);
+        //     setMinSpeed(Math.min(data.min, minSpeed));
+        //     setMaxSpeed(Math.max(data.max, maxSpeed));
+        // });
+        
+        speedSocket.on('currentspeed',(data)=>{
+            setSpeed(data);
+        })
         speedSocket.on('rpm', (data) => {
             setRPM(data);
         });

@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 import { useCallback } from 'react';
 
 const Temperature = () => {
-  const [angle, setAngle] = useState(45);
+  const [angle, setAngle] = useState(0);
   const [tempRL,setTempRL] = useState(0);
   const [tempFL,setTempFL] = useState(0);
   const [tempRR,setTempRR] = useState(0);
@@ -23,29 +23,21 @@ const Temperature = () => {
       console.log('Temp Disconnected from server');
     });
 
-    tempSocket.on('tire_temp', (data) => {
-      setTempRL(data.rear_left);
-      setTempFL(data.front_left);
-      setTempRR(data.rear_right);
-      setTempFR(data.front_right);
+    tempSocket.on('tireTemp', (data) => {
+      const tireTemp = JSON.parse(data);
+      setTempRL(Math.floor(tireTemp.rearLeft));
+      setTempFL(Math.floor(tireTemp.frontLeft));
+      setTempRR(Math.floor(tireTemp.rearRight));
+      setTempFR(Math.floor(tireTemp.frontRight));
     });
+
+    tempSocket.on('steeringAngle', (angle) => {
+      setAngle(angle);
+    });
+
     return () => {
       tempSocket.disconnect();
     };
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAngle((prevAngle) => Math.floor(Math.random() * 360)); // Rotate by random degrees every second
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAngle((prevAngle) => Math.floor(Math.random()* 360)); // Rotate by 10 degrees every second
-    }, 1000);
-    return () => clearInterval(interval);
   }, []);
 
   return (
