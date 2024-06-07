@@ -16,6 +16,12 @@ message RacecarData {
         double rear_left = 4;
     }
 
+    //'Location' defines location of the car 
+    message Location {
+        double lat=1;
+        double long=2;
+    }
+
     // "Trajectory" defines the global trajectory 
     message Trajectory {
         repeated double x_m = 1;
@@ -24,7 +30,7 @@ message RacecarData {
     }
 
     Speed speed = 1;                        // Racecar speed states
-    Tire tireTemp = 2;                     // Tire temperature 
+    Tire tire_temp = 2;                     // Tire temperature 
     double throttle = 3;                    // Throttle 
     double brake = 4;                       // Brake
     int32 gear = 5;                         // Transmission gear state
@@ -35,7 +41,8 @@ message RacecarData {
     double steering_angle = 10;             // Steering angle in degrees
     bool disconnected = 11;                 // Car connetivity state
     int32 laps = 12;                        // Number of completed laps
-    int32 trackFlag = 13;                  // Current track flag state 
-    int32 vehicleFlag = 14;                // Current vehicle flag state
+    int32 track_flag = 13;                  // Current track flag state 
+    int32 vehicle_flag = 14;                // Current vehicle flag state
     Trajectory planning_trajectory = 15;    // Global trajectory
+    Location location = 16;                 // Location 
 }

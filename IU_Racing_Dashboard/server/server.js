@@ -12,6 +12,7 @@ const cors = require('cors');
 const socketIO = require('socket.io');
 const RacingData = proto.lookupType('RacecarData');
 const os = require('os');
+const { log } = require('console');
 let latestData;
 const Track_Flag_List = ['green', 'yellow', 'red'];
 const Vehicle_Flag_List = ['purple', 'yellow', 'blue', 'orange', 'grey'];
@@ -129,7 +130,10 @@ udpServer.on('message', (msg) => {
   if(latestData.vehicleFlag!=0){
     io.emit('vehicleFlag',VehicleFlagObj[latestData.vehicleFlag]);
   }
-  // console.log(JSON.stringify(latestData));
+  if(latestData.location!==null){
+    io.emit('location',JSON.stringify(latestData.location));
+  }
+ 
   // Object.keys(latestData).forEach(field => {
   //   io.emit(field, latestData[field]);
   // });
