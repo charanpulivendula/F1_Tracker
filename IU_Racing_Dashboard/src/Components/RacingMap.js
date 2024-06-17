@@ -55,7 +55,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import racingmap from '../Assets/racing_map.png';
+<<<<<<< HEAD
 import * as d3 from 'd3';
+=======
+import racingZoom from '../Assets/racing_zoom.png';
+>>>>>>> b91f5085dfd4afe00771cf6198fa9ed642e2735f
 import GMap from './GMap';
 import sampleJSON from '../Static/coordinates.json';
 

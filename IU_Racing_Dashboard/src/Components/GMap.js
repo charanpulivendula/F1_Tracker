@@ -118,7 +118,7 @@ const GMap = () => {
         </div>
         
       ) : (
-        <div>Loading Google Map...</div>
+        <div>Google Map Offline...</div>
       )}
     </div>
   );
