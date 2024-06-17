@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleMap, LoadScript, Marker, useJsApiLoader } from '@react-google-maps/api';
 import racingmap from '../Assets/racing_map.png';
+import racingZoom from '../Assets/racing_zoom.png';
 import GMap from './GMap';
 
 const libraries = ['places'];
@@ -18,7 +19,7 @@ const RacingMap = () => {
     <div className=''>
       <img
         alt="Mask group"
-        src="https://c.animaapp.com/IFYG8yp8/img/mask-group.png"
+        src={racingZoom}
         width={1399}
         height={1042}
       />
