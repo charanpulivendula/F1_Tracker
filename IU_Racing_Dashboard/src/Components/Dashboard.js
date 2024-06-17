@@ -9,7 +9,7 @@ import Overview from "./Overview";
 const Dashboard = () => {
   return (
     <div className="flex flex-row w-full ">
-      <div className=" flex flex-row justify-between">
+      <div className=" flex flex-row justify-between max-xl:space-x-40">
         {/* <Darkmode/>
         <Connection/> */}
         <Overview/>
