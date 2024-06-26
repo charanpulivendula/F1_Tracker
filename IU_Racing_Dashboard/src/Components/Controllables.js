@@ -8,7 +8,7 @@ import TempState from './TempState';
 
 const Contollables = ()=>{
     return (
-        <div className='flex flex-col w-4/5 ml-16'>
+        <div className='flex flex-col w-4/5 xl:space-y-10'>
             <Speedometer/>
             <Controls/>
             <TempState/>

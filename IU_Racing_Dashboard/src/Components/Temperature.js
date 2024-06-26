@@ -52,12 +52,14 @@ const Temperature = () => {
       </div>
       <div className='w-1/2 relative'>
         <img src={car_temp} alt='car' width={120} height={280} className='' />
-        <div className='absolute top-[36%] left-[32%] flex flex-col items-center'>
+        <div className='absolute top-[36%] left-[33%] flex flex-col items-center'>
           <img
             src={steering}
             height={36}
             width={36}
-            className='transition transform'
+            className='transition transform duration-300
+            
+            '
             alt='steering'
             style={{ transform: `rotate(${angle}deg)` }}
           />

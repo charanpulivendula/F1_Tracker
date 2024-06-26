@@ -35,7 +35,7 @@ const Overview = ()=>{
         return () => clearInterval(id);
       }, []);
     return (
-        <div className=' flex-col w-[20%]'>
+        <div className='flex flex-col xl:space-y-10'>
             <img
             className="flex mx-[35%]"
             alt="Vector"
@@ -43,7 +43,7 @@ const Overview = ()=>{
             height={80}
             width={65}
             />
-            <div className="flex-col mt-5">
+            <div className="flex-col mt-5 w-[300px]">
                 <div className="number [font-family:'Michroma',Helvetica] font-normal text-white text-[24px] tracking-[0] leading-[normal]">
                     Italy Grand Pix
                 </div>
@@ -60,9 +60,13 @@ const Overview = ()=>{
                     </div>
                 </div>
                 
-                <p className="text flex justify-center [font-family:'Michroma',Helvetica] font-normal text-white text-[36px]  tracking-[0] leading-[normal]">
+                {/* <p className="text flex justify-center [font-family:'Michroma',Helvetica] font-normal text-white text-[36px]  tracking-[0] leading-[normal]">
+                    <Clock format="HH:mm:ss" interval={1000} className='number' ticking={true} />
+                </p> */}
+                <p className="text flex justify-center font-normal text-white text-[36px] leading-normal">
                     <Clock format="HH:mm:ss" interval={1000} className='number' ticking={true} />
                 </p>
+
                 
                 <div className=" ">
                     <div className=" ">

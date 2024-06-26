@@ -12,7 +12,7 @@ const GMap = () => {
   const [racePath, setRacePath] = useState([]);
   const [carPosition, setCarPosition] = useState(null);
   const [mapCenter, setMapCenter] = useState({ lat: 45.6217635762167, lng: 9.281490418085674});
-  const [center, setCenter] = useState({ lat: 45.6217635762167, lng: 9.281490418085674});
+  const center = useRef({ lat: 45.6217635762167, lng: 9.281490418085674});
   const [disconnect,setDisconnect] = useState(false);
 
   useEffect(() => {
@@ -74,7 +74,7 @@ const GMap = () => {
   });
 
   return (
-    <div className="ml-5" style={{ width: '100%', height: '100%' }}>
+    <div className="" style={{ width: '100%', height: '100%' }}>
       <button onClick={()=>{
         setRacePath([]);
       }}>Clear</button>
@@ -82,23 +82,7 @@ const GMap = () => {
         <div className=''>
           <div className='p-2'>
             <GoogleMap
-              mapContainerStyle={{ width: 620, height: 400 }}
-              zoom={20}
-              center={mapCenter}
-              options={{ styles: DarkModeStyles }}
-            >
-              {carPosition && <Marker position={carPosition} icon={{
-                url:logo,
-                scaledSize: new window.google.maps.Size(20, 20)
-              }}/>}
-              {racePath.length > 1 && (
-                <Polyline path={racePath} options={{ strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 20}} />
-              )}
-            </GoogleMap>
-          </div>
-          <div className='p-2'>
-            <GoogleMap
-                mapContainerStyle={{ width: 620, height: 400 }}
+                mapContainerStyle={{ width: 500, height: 400 }}
                 zoom={14}
                 center={{lat:45.622632, lng:9.288045}}
                 options={{ styles: DarkModeStyles}}
@@ -110,10 +94,27 @@ const GMap = () => {
                   scaledSize: new window.google.maps.Size(20, 20)
                 }}/>}
                 {racePath.length > 1 && (
-                  <Polyline path={racePath} options={{ strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 3}} />
+                  <Polyline path={racePath} options={{ strokeColor: '#FF0000', strokeOpacity: 0.5, strokeWeight: 3}} />
                 )}
               </GoogleMap>
           </div>
+          <div className='p-2'>
+            <GoogleMap
+              mapContainerStyle={{ width: 500, height: 400 }}
+              zoom={19}
+              center={mapCenter}
+              options={{ styles: DarkModeStyles }}
+            >
+              {carPosition && <Marker position={carPosition} icon={{
+                url:logo,
+                scaledSize: new window.google.maps.Size(20, 20)
+              }}/>}
+              {racePath.length > 1 && (
+                <Polyline path={racePath} options={{ strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 18}} />
+              )}
+            </GoogleMap>
+          </div>
+          
 
         </div>
         
