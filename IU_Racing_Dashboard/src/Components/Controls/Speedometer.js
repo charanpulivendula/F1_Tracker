@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import progress_circle from '../Assets/progress_circle.svg';
-import marker from '../Assets/marker.svg';
-import line from '../Assets/line_speedometer.svg';
+import progress_circle from '../../Assets/progress_circle.svg';
+import marker from '../../Assets/marker.svg';
+import line from '../../Assets/line_speedometer.svg';
 import ChangingProgressProvider from './ChangingProgressProvider';
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";

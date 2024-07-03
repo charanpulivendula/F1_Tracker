@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import car_temp from '../Assets/car_temp.png';
-import steering from '../Assets/steering.png';
+import car_temp from '../../Assets/car_temp.png';
+import steering from '../../Assets/steering.png';
 import { io } from "socket.io-client";
 import { useCallback } from 'react';
 

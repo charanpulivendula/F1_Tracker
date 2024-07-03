@@ -1,4 +1,4 @@
-import progress_circle from '../Assets/progress_circle.svg';
+import progress_circle from '../../Assets/progress_circle.svg';
 // import Temperature from "./Temperature";
 import Speedometer from "./Speedometer";
 import Controls from './Controls';

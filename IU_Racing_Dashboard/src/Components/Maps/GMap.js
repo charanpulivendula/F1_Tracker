@@ -1,10 +1,10 @@
 /* global google */
 import { GoogleMap, useJsApiLoader, Marker, Polyline, MarkerClusterer } from '@react-google-maps/api';
-import { DarkModeStyles } from '../Static/DarkModeStyles';
+import { DarkModeStyles } from '../../Static/DarkModeStyles';
 import { useState, useEffect, useCallback,useRef } from 'react';
 
 import io from 'socket.io-client';
-import logo from '../Assets/logo.svg';
+import logo from '../../Assets/logo.svg';
 const MAX_MARKERS = 10;
 const libraries = ['places'];
 
@@ -119,7 +119,8 @@ const GMap = () => {
         </div>
         
       ) : (
-        <div>Google Map Offline...</div>
+        <div>Google Map Offline...</div>-
+        9
       )}
     </div>
   );

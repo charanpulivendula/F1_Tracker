@@ -6,7 +6,7 @@ import {
     buildStyles,
   } from "react-circular-progressbar";
   import "react-circular-progressbar/dist/styles.css";
-import progress_circle from '../Assets/progress_circle.svg';
+import progress_circle from '../../Assets/progress_circle.svg';
 
 const ControlMeter = ({ name, color, maxValue,value }) => {
 

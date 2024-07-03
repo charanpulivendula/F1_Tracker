@@ -1,7 +1,7 @@
-import logo from '../Assets/logo.svg';
-import track_flag_red from '../Assets/track-flag-red.png';
-import track_flag_grey from '../Assets/track-flag-grey.png';
-import Weather from '../Assets/Weather.png';
+import logo from '../../Assets/logo.svg';
+import track_flag_red from '../../Assets/track-flag-red.png';
+import track_flag_grey from '../../Assets/track-flag-grey.png';
+import Weather from '../../Assets/Weather.png';
 import LapData from './LapData';
 import { useState,useEffect } from 'react';
 import 'react-clock/dist/Clock.css';

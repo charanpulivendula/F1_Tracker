@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import samosa from '../Assets/samosa.png';
-import circle from '../Assets/Circle.png';
-import wrong from '../Assets/wrong.png';
-import '../Styles/states.css';
+import samosa from '../../Assets/samosa.png';
+import circle from '../../Assets/Circle.png';
+import wrong from '../../Assets/wrong.png';
+import '../../Styles/states.css';
 
 const States = () => {
   const [sysState, setSysState] = useState(1);

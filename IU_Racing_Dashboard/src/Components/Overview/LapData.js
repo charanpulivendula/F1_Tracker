@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import colors from '../Static/colors.json';
+import colors from '../../Static/colors.json';
 import OpponentCard from './OpponentCard';
 const Lap_Data = ()=>{
     const [currentlap,setCurrentLap] = useState(0);

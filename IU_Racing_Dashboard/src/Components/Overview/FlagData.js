@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import yellow from '../Assets/Track-Flag-yellow.png';
-import red from '../Assets/track-flag-red.png';
-import green from '../Assets/Track Flag green.png';
-import purple from '../Assets/Track Flag Purple.png';
-import blue from '../Assets/Track Flag blue.png';
-import orange from '../Assets/Track Flag orange.png';
-import grey from '../Assets/track-flag-grey.png';
+import yellow from '../../Assets/Track-Flag-yellow.png';
+import red from '../../Assets/track-flag-red.png';
+import green from '../../Assets/Track Flag green.png';
+import purple from '../../Assets/Track Flag Purple.png';
+import blue from '../../Assets/Track Flag blue.png';
+import orange from '../../Assets/Track Flag orange.png';
+import grey from '../../Assets/track-flag-grey.png';
 import { io } from 'socket.io-client';
 
 const FlagData = () => {

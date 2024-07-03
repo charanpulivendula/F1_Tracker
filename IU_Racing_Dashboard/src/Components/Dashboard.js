@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import RacingMap from "./RacingMap";
-import Controllables from "./Controllables";
-import Overview from "./Overview";
+import RacingMap from "./Maps/RacingMap";
+import Controllables from "./Controls/Controllables";
+import Overview from "./Overview/Overview";
 import { io } from "socket.io-client";
-import PopUpMessage from './PopUpMessage';
+import PopUpMessage from './Miscellaneous/PopUpMessage';
 
 const Dashboard = () => {
   const [initializing, setInitializing] = useState(true);
