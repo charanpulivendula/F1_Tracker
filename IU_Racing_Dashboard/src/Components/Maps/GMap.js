@@ -80,9 +80,9 @@ const GMap = () => {
       }}>Clear</button>
       {isLoaded ? (
         <div className=''>
-          <div className='p-2'>
+          <div className='py-2'>
             <GoogleMap
-                mapContainerStyle={{ width: 500, height: 400 }}
+                mapContainerStyle={{ width: 550, height: 400 }}
                 zoom={14}
                 center={{lat:45.622632, lng:9.288045}}
                 options={{ styles: DarkModeStyles}}
@@ -98,9 +98,9 @@ const GMap = () => {
                 )}
               </GoogleMap>
           </div>
-          <div className='p-2'>
+          <div className='py-2'>
             <GoogleMap
-              mapContainerStyle={{ width: 500, height: 400 }}
+              mapContainerStyle={{ width: 550, height: 400 }}
               zoom={19}
               center={mapCenter}
               options={{ styles: DarkModeStyles }}

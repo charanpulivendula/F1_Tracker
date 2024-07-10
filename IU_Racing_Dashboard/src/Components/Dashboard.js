@@ -66,7 +66,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-row w-full">
       {(initializing || !controls || !perception || !localization || !done) && !close && <PopUpMessage message={msg} closePopup={handleclosePopup}/>}
-      <div className="flex flex-row justify-between xl:space-x-40">
+      <div className="flex flex-row justify-between xl:space-x-28">
         <Overview />
         <RacingMap />
         <Controllables />

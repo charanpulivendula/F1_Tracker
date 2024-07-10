@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import racingmap from '../../Assets/racing_map.png';
 import RaceMapScale from './RaceMapScale'
 import GMap from './GMap';
+import RaceMapPlanar from './RaceMapPlanar';
 
 const RacingMap = () => {
   const [mapType, setMapType] = useState('racing');
@@ -13,7 +14,7 @@ const RacingMap = () => {
     setMapType(event.target.value);
   };
   
-  const selectedMap = mapType === 'racing' ? <RaceMapScale/> : <GMap />;
+  const selectedMap = mapType === 'racing' ? <RaceMapPlanar/> : <GMap />;
 
   return (
     <div className='flex-col h-full'>
