@@ -5,6 +5,7 @@ import racingmap from '../../Assets/racing_map.png';
 import RaceMapScale from './RaceMapScale'
 import GMap from './GMap';
 import RaceMapPlanar from './RaceMapPlanar';
+import ModeStatus from './ModeStatus';
 
 const RacingMap = () => {
   const [mapType, setMapType] = useState('racing');
@@ -18,6 +19,7 @@ const RacingMap = () => {
 
   return (
     <div className='flex-col h-full'>
+      <ModeStatus/>
       <select
         className=''
         style={{ color: "#000" }}
