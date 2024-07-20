@@ -124,7 +124,12 @@ Efficient Data Handling: Use of ProtoBuf ensures efficient serialization and des
   - *Components* has the UI for each component(Eg speedometer, tyre temerature) refer to [Component_Stack](#Component_Stack)
 
 # Component_Stack
-  - Entry point (Dashboard)(.js)
+  ![Component Tree](image.png)
+  - Components are building blocks of UI. we are using react components.
+  - All Components are set to be in /src/components directory
+  - Entry point src/components/Dashboard(.js)
+    - This Component acts as a root of all the Racing Components.
+  
   - *Controls* has 3 parts: 
     - Speedometer (Speedometer, ChangingProgressProvider)
     - Controls(Controls, Controllables, ControlMeter)
