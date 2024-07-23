@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import RacingMap from "./Maps/RacingMap";
-import Controllables from "./Controls/Controllables";
-import Overview from "./Overview/Overview";
+
 import { io } from "socket.io-client";
-import PopUpMessage from './Miscellaneous/PopUpMessage';
+import Controls from "./Controls/Controls";
+import Map from "./Maps/Map";
+import Overview from "./Overview/Overview";
 
 const Dashboard = () => {
   const [initializing, setInitializing] = useState(true);
@@ -31,46 +31,44 @@ const Dashboard = () => {
     };
   }, []);
 
-  useEffect(() => {
-    // Sequentially update states with timeouts
-    setTimeout(() => {
-      setInitializing(false);
-      setMsg("Controls initializing...");
-    }, 3000);
+  // useEffect(() => {
+  //   // Sequentially update states with timeouts
+  //   setTimeout(() => {
+  //     setInitializing(false);
+  //     setMsg("Controls initializing...");
+  //   }, 3000);
 
-    setTimeout(() => {
-      setControls(true);
-      setMsg("Perception initializing...");
-    }, 6000);
+  //   setTimeout(() => {
+  //     setControls(true);
+  //     setMsg("Perception initializing...");
+  //   }, 6000);
 
-    setTimeout(() => {
-      setPerception(true);
-      setMsg("Localization initializing...");
-    }, 9000);
+  //   setTimeout(() => {
+  //     setPerception(true);
+  //     setMsg("Localization initializing...");
+  //   }, 9000);
 
-    setTimeout(() => {
-      setLocalization(true);
-      setMsg("Done...");
-    }, 12000);
+  //   setTimeout(() => {
+  //     setLocalization(true);
+  //     setMsg("Done...");
+  //   }, 12000);
 
-    setTimeout(()=>{
-      setDone(true)
-    },14000)
+  //   setTimeout(()=>{
+  //     setDone(true)
+  //   },14000)
 
-  }, []); 
+  // }, []); 
 
-  const handleclosePopup = ()=>{
-    setClose(true);
-  }
+  // const handleclosePopup = ()=>{
+  //   setClose(true);
+  // }
 
   return (
     <div className="flex flex-row w-full">
-      {(initializing || !controls || !perception || !localization || !done) && !close && <PopUpMessage message={msg} closePopup={handleclosePopup}/>}
-      <div className="flex flex-row justify-between xl:space-x-28">
+      {/* {(initializing || !controls || !perception || !localization || !done) && !close && <PopUpMessage message={msg} closePopup={handleclosePopup}/>} */}
         <Overview />
-        <RacingMap />
-        <Controllables />
-      </div>
+        <Map />
+        <Controls />
     </div>
   );
 };
