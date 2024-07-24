@@ -18,6 +18,7 @@ const Track_Flag_List = ['green', 'yellow', 'red'];
 const Vehicle_Flag_List = ['purple', 'yellow', 'blue', 'orange', 'grey'];
 const heartbeatImages = ['samosa', 'circle', 'wrong']; 
 
+
 const TrackCondition = {
   0: "null",
   3: "red",
@@ -79,7 +80,10 @@ server.listen(port, () => {
 // UDP server
 
 const udpServer = dgram.createSocket('udp4');
+const udpClient = dgram.createSocket('udp4');
 const UDP_PORT = 9876;
+const UDP_Target_PORT = 9877;
+const UDP_Target_IP = '10.20.240.105'
 
 const networkInterfaces = os.networkInterfaces();
 let localIPAddress;
@@ -169,6 +173,23 @@ setInterval(() => {
 }, 5000);
 
 
+const sendUdpMessage = (message) => {
+  // const errMsg = RacingData.verify(message);
+  // if (errMsg) throw Error(errMsg);
+  
+  const messageBuffer = RacingData.encode(RacingData.create(message)).finish();
+  const date = parseFloat(Date.now())
+  console.log(date);
+  udpClient.send(messageBuffer, UDP_Target_PORT, UDP_Target_IP, (err) => {
+    if (err) console.error('UDP message send error:', err);
+  });
+};
+
+setInterval(() => {
+  const randomData = generateRandomData();
+  sendUdpMessage(randomData);
+  // console.log("message sent");
+}, 5000);
 
 const generateRandomData = () => {
   return {
@@ -187,7 +208,7 @@ const generateRandomData = () => {
     brake: Math.floor(Math.random() * 10),
     // gear: Math.floor(Math.floor(Math.random() * 7)),
     ct_state: Math.floor(Math.random() * 12) + 1, // Assuming ctState values range from 1 to 12
-    heartbeat: heartbeatImages[Math.floor(Math.random() * heartbeatImages.length)],
+    heartbeat: heartbeatImages[1],
     comm: Math.floor(Math.random() * 100),
     system: 'Active',
     rpm: Math.floor(Math.random() * 8000),
