@@ -126,7 +126,7 @@ Efficient Data Handling: Use of ProtoBuf ensures efficient serialization and des
 
 ## Workflow Diagram
 
-![Work Flow Diagram](./src/Static/Architecture.png)
+![Work Flow Diagram](./IU_Racing_Dashboard/src/Static/Architecture.png)
 
 # Index
 1) [Go to Styling](#Styling)
@@ -162,7 +162,7 @@ Efficient Data Handling: Use of ProtoBuf ensures efficient serialization and des
   - *Components* has the UI for each component(Eg speedometer, tyre temerature) refer to [Component_Stack](#Component_Stack)
 
 # Component_Stack
-  ![Component Tree](image.png)
+  ![Component Tree](./IU_Racing_Dashboard/image.png)
   - Components are building blocks of UI. we are using react components.
   - All Components are set to be in /src/components directory
   - Entry point src/components/Dashboard(.js)
