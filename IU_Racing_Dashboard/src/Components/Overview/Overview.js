@@ -1,5 +1,6 @@
 import React from 'react'
 import Live from './Live'
+import CarStatus from '../CarStatus/CarStatus'
 
 const Overview = () => {
   return (
@@ -14,7 +15,7 @@ const Overview = () => {
 
         </div>
         <div>
-
+            <CarStatus/>
         </div>
     </div>
   )

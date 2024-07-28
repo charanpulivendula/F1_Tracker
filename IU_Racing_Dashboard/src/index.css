@@ -40,11 +40,26 @@ body {
   color: white;
 }
 
+.heading{
+  font-family: 'archivo',-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  font-size: 36;
+  font-weight:bold;
+  text-align: left;
+  color: #8D8D8D;
+}
+
 .number{
   font-family: 'michroma',-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
   'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
   sans-serif;
   color: white;
+}
+
+.logo-text{
+  font-family: 'open-sans';
+  color: white
 }
 
 code {

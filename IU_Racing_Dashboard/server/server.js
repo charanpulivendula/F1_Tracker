@@ -82,7 +82,7 @@ server.listen(port, () => {
 const udpServer = dgram.createSocket('udp4');
 const udpClient = dgram.createSocket('udp4');
 const UDP_PORT = 9876;
-const UDP_Target_PORT = 9877;
+const UDP_Target_PORT = 8000;
 const UDP_Target_IP = '10.20.240.105'
 
 const networkInterfaces = os.networkInterfaces();

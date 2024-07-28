@@ -39,7 +39,7 @@ const Live = ()=>{
             width={65}
             />
             <div className="flex-col mt-1 w-[300px]">
-                <div className="  font-bold text-white text-[24px] tracking-[0] leading-[normal]">
+                <div className="logo-text font-bold text-white text-[24px] tracking-[0] leading-[normal]">
                     LUDDY
                 </div>
                 {/* <div className='flex justify-center'>
