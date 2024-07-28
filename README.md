@@ -3,12 +3,12 @@
 # Overview
  Racing dashboard for an autonomous racing car involves integrating various technologies to track and display real-time data such as speed, location, throttle, brake, steering angle, and tire temperature. Here's an overview of the components and their interactions:
  
- # prereq
+ # Prereq
 1) Node JS (`sudo apt install nodejs`)(check if installed `node -v`)
 2) VSCode(recommended)
 3) Stable internet Connection
 
-# instructions for setup:
+# Instructions for setup:
 Clone the repository from `https://gitlab.com/iu-vail/iu-racing/ui-ux/IU_Racing_Dashboard`
 
 1) Requires 3 terminals for setting up.
