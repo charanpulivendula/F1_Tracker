@@ -3,6 +3,44 @@
 # Overview
  Racing dashboard for an autonomous racing car involves integrating various technologies to track and display real-time data such as speed, location, throttle, brake, steering angle, and tire temperature. Here's an overview of the components and their interactions:
 
+# instructions for setup:
+Clone the repository from `https://gitlab.com/iu-vail/iu-racing/ui-ux/IU_Racing_Dashboard`
+
+1) Requires 3 terminals for setting up.
+2) Make Sure ENVIRONMENT VARIABLES file is present or place it in root *** IU_Racing_Dashboard/IU_Racing_Dashboard *** as *.env*
+3) Print() --> Console.log(val)
+## Front End
+  1) run `npm install` (first time for installing dependencies)
+  2) run `npm start` from the tip of the *** IU_Racing_Dashboard/IU_Racing_Dashboard ***
+  3) Check errors in the console
+  4) Automatically opens browser with localhost:3000 or type `http://localhost:3000` in browser
+
+## Backend
+  1) Go to another terminal, Go to path {IU_Racing_Dashboard}/IU_Racing_Dashboard/Server
+  2) Run `node server.js` on this path.
+  3) Check for any errors
+  4) Should display the ports listening-> Server 8080 
+                              listening-> UDP Server IP:9876(acting as client to ros_backend)
+                              Sending -> BaseStation_IP:9877(in progress)
+  5) Topic values can be logged to console here
+
+## Ros_Backend
+  1) Clone the `https://gitlab.com/iu-vail/iu-racing/ui-ux/ros_backend` repo
+  2) The ros_backend.py has all the subscriptions to the required topics.
+  3) Source the terminal for the simulator/car's setup.bash
+  4) run `python3 ros_backend.py` and check for errors
+  5) This starts listening to topics and send udp_packets to Backend of dashboard
+
+# Trouble Shooting
+1) (optional if there is no communication from front end to backend) checking for port assignment in the linux system :
+     `sudo iptables -L INPUT -v -n --line-numbers`
+2) Assigning port manually 
+      `udo iptables -A INPUT -p udp --dport 9876 -j ACCEPT`
+3) errors in google maps
+   - check for internet
+   - check for .env file in the path
+
+
 ## Available Scripts
 
 Go to the project directory, you can run:
