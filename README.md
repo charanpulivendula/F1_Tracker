@@ -156,7 +156,7 @@ Efficient Data Handling: Use of ProtoBuf ensures efficient serialization and des
 
 ## Workflow Diagram
 
-![Work Flow Diagram](.IU_Racing_Dashboard/src/Static/Architecture.png)
+![Work Flow Diagram](IU_Racing_Dashboard/src/Static/Architecture.png)
 
 # Index
 1) [Go to Styling](#Styling)
