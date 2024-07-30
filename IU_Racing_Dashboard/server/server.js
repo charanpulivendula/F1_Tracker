@@ -81,12 +81,12 @@ server.listen(port, () => {
 
 const udpServer = dgram.createSocket('udp4');
 const udpClient = dgram.createSocket('udp4');
-const UDP_PORT = 9876;
-const UDP_Target_PORT = 8000;
+const UDP_LISTENING_PORT = 9876;
+const UDP__LISTENING_IP = '10.20.240.105'
+const UDP_Target_PORT = 9877;
 const UDP_Target_IP = '10.20.240.105'
 
 const networkInterfaces = os.networkInterfaces();
-let localIPAddress;
 
 Object.keys(networkInterfaces).forEach(interfaceName => {
   const interfaceList = networkInterfaces[interfaceName];
@@ -111,6 +111,7 @@ udpServer.on('message', (msg) => {
     enums: String,
     bytes: String,
   });
+  console.log(latestData);
   if (latestData.speed!=null && latestData.speed.current!=0){
     latestData.speed.current=Math.floor(latestData.speed.current);
     io.emit('currentspeed',latestData.speed.current);
@@ -161,8 +162,8 @@ udpServer.on('listening', () => {
 });
 
 udpServer.bind({
-  port: UDP_PORT,
-  address: localIPAddress
+  port: UDP_LISTENING_PORT,
+  address: UDP__LISTENING_IP
 });
 
 setInterval(() => {
@@ -178,8 +179,6 @@ const sendUdpMessage = (message) => {
   // if (errMsg) throw Error(errMsg);
   
   const messageBuffer = RacingData.encode(RacingData.create(message)).finish();
-  const date = parseFloat(Date.now())
-  console.log(date);
   udpClient.send(messageBuffer, UDP_Target_PORT, UDP_Target_IP, (err) => {
     if (err) console.error('UDP message send error:', err);
   });
