@@ -2,13 +2,13 @@
 
 # Overview
  Racing dashboard for an autonomous racing car involves integrating various technologies to track and display real-time data such as speed, location, throttle, brake, steering angle, and tire temperature. Here's an overview of the components and their interactions:
- 
- # Prereq
+
+# prereq
 1) Node JS (`sudo apt install nodejs`)(check if installed `node -v`)
 2) VSCode(recommended)
 3) Stable internet Connection
 
-# Instructions for setup:
+# instructions for setup:
 Clone the repository from `https://gitlab.com/iu-vail/iu-racing/ui-ux/IU_Racing_Dashboard`
 
 1) Requires 3 terminals for setting up.
@@ -35,6 +35,31 @@ Clone the repository from `https://gitlab.com/iu-vail/iu-racing/ui-ux/IU_Racing_
   3) Source the terminal for the simulator/car's setup.bash
   4) run `python3 ros_backend.py` and check for errors
   5) This starts listening to topics and send udp_packets to Backend of dashboard
+
+## Google Protobuffers
+1) protobuffers helps us for data serialization and data deserialization
+2) Language independent
+3) write a .proto file that should be equal on both the communicating endpoints
+   {
+    syntax = "proto3";
+    message RacecarData {
+      Speed speed = 1
+      Tire tire_temp = 2
+      .
+      .
+      .
+    }
+    message Control{
+      Stop stop = 1
+    }
+   }
+4) Compile the .proto file on their respective end points
+   - for python : `protoc --python_out=. racing.proto`
+   - for JavaScript : `protoc --js_out=import_style=commonjs,binary:. ./racing_data.proto`
+5) Import the proto object, Populate the fields, Encode and Decode functions for serialization and deserialization into     buffers
+6) Send the buffer data through the respective UDP ports
+7) More Info https://protobuf.dev/overview/
+
 
 # Trouble Shooting
 1) (optional if there is no communication from front end to backend) checking for port assignment in the linux system :
@@ -131,7 +156,7 @@ Efficient Data Handling: Use of ProtoBuf ensures efficient serialization and des
 
 ## Workflow Diagram
 
-![Work Flow Diagram](./IU_Racing_Dashboard/src/Static/Architecture.png)
+![Work Flow Diagram](./src/Static/Architecture.png)
 
 # Index
 1) [Go to Styling](#Styling)
@@ -167,7 +192,7 @@ Efficient Data Handling: Use of ProtoBuf ensures efficient serialization and des
   - *Components* has the UI for each component(Eg speedometer, tyre temerature) refer to [Component_Stack](#Component_Stack)
 
 # Component_Stack
-  ![Component Tree](./IU_Racing_Dashboard/image.png)
+  ![Component Tree](image.png)
   - Components are building blocks of UI. we are using react components.
   - All Components are set to be in /src/components directory
   - Entry point src/components/Dashboard(.js)
