@@ -2,12 +2,21 @@ import React, { useRef, useEffect, useState } from "react";
 import * as d3 from 'd3';
 import monza_boundaries_json from '../../Static/monza_boundaries.json';
 import monza_race_json from '../../Static/monza_race.json';
-import SimpleDeque from './SimpleDequeue'
+import kentucky_race_json from '../../Static/Kentucky_RaceLine.json';
+import Kentucky_boundaries_json from '../../Static/Kentucky_Boundaries.json';
+import SimpleDeque from './SimpleDequeue';
+import { useSelector } from "react-redux";
 
-const Zoom_Animation = () => {
+const ZoomAnimation = () => {
+    const mapDictionary = {
+        Monza: [monza_race_json, monza_boundaries_json],
+        KY: [kentucky_race_json, Kentucky_boundaries_json]
+    };
+
     const svgRef = useRef(null);
-    const monza_boundaries = useRef(monza_boundaries_json);
-    const monza_race = useRef(monza_race_json);
+    const mapType = useSelector(state => state.map.mapType);
+    const [trackLineJson, setTrackLineJson] = useState(null);
+    const [trackBoundaries, setTrackBoundaries] = useState(null);
     const [pointPosition, setPointPosition] = useState({ x: 0, y: 0 });
     const [currentIndex, setCurrentIndex] = useState(0);
     const [boundaries, setBoundaries] = useState({
@@ -16,39 +25,46 @@ const Zoom_Animation = () => {
         bottomLeft: { x: 0, y: 0 },
         bottomRight: { x: 0, y: 0 }
     });
-    const track_width = 10;
 
+    const trackWidth = 10;
     const width = 550;
     const height = 350;
     const padding = 24;
-    const pointRadius = 10;
-    const offset = 15;
+    const zoom = 20;  // zooming is reverse
     const centerX = width / 2;
     const centerY = height / 2;
 
-    var innerTrack = []
-    var outerTrack = []
-    var racepath = []
+    const innerTrack = useRef([]);
+    const outerTrack = useRef([]);
+    const racePath = useRef([]);
 
-    monza_boundaries.current.forEach(element => {
-        innerTrack.push([-element.inner_x,-element.inner_y])
-        outerTrack.push([-element.outer_x,-element.outer_y])
-    });
+    useEffect(() => {
+        // Load and set track data based on mapType
+        if (mapDictionary[mapType]) {
+            const [raceData, boundaryData] = mapDictionary[mapType];
+            setTrackLineJson(raceData);
+            setTrackBoundaries(boundaryData);
+        }
+    }, [mapType, mapDictionary]);
 
-    monza_race.current.forEach(element => {
-        racepath.push([-element.x,-element.y])
-    });
+    useEffect(() => {
+        if (trackBoundaries && trackLineJson) {
+            innerTrack.current = trackBoundaries.map(element => [-element.inner_x, -element.inner_y]);
+            outerTrack.current = trackBoundaries.map(element => [-element.outer_x, -element.outer_y]);
+            racePath.current = trackLineJson.map(element => [-element.x, -element.y]);
+        }
+    }, [trackBoundaries, trackLineJson]);
 
     const xDomain = [boundaries.topLeft.x, boundaries.bottomRight.x];
     const yDomain = [boundaries.topLeft.y, boundaries.bottomRight.y];
 
     const xScale = d3.scaleLinear()
-            .domain(xDomain)
-            .range([padding, width - padding]);
+        .domain(xDomain)
+        .range([padding, width - padding]);
 
     const yScale = d3.scaleLinear()
         .domain(yDomain)
-        .range([padding, height - padding])
+        .range([padding, height - padding]);
 
     const lineGenerator = d3.line()
         .x(d => xScale(d[0]))
@@ -70,24 +86,23 @@ const Zoom_Animation = () => {
             .attr('r', 15)
             .attr('fill', '#F20000')
             .attr('stroke', 'black')
-            .attr('stroke-width', 2)
-            
+            .attr('stroke-width', 2);
 
         const intervalId = setInterval(() => {
-            const index = (currentIndex) % racepath.length;
-            const [x, y] = racepath[index];
-            
-            
+            const index = (currentIndex) % racePath.current.length;
+            const [x, y] = racePath.current[index];
+
             setPointPosition({ x, y });
-            setCurrentIndex(prevIndex => (prevIndex + 1) % racepath.length);
+            setCurrentIndex(prevIndex => (prevIndex + 1) % racePath.current.length);
 
             setBoundaries({
-                topLeft: { x: x - offset, y: y - offset },
-                topRight: { x: x + offset, y: y - offset },
-                bottomLeft: { x: x - offset, y: y + offset },
-                bottomRight: { x: x + offset, y: y + offset }
+                topLeft: { x: x - zoom, y: y - zoom },
+                topRight: { x: x + zoom, y: y - zoom },
+                bottomLeft: { x: x - zoom, y: y + zoom },
+                bottomRight: { x: x + zoom, y: y + zoom }
             });
         }, 50);
+
         // Define gradient
         const gradient = svg.append("defs")
             .append("linearGradient")
@@ -111,50 +126,47 @@ const Zoom_Animation = () => {
             .attr("stop-color", "B0B0B0");
 
         return () => clearInterval(intervalId);
-    }, [pointPosition,currentIndex,boundaries]);
+    }, [pointPosition, currentIndex, centerX, centerY, boundaries]);
 
     useEffect(() => {
         const svg = d3.select(svgRef.current);
         svg.selectAll("path").remove();
 
         const drawTrackSegment = (track, color) => {
-            let path_width = track_width;
-            let path_breaker = false;
-            let linear_gradient = null;
-            if(color === '#F20000'){
-                path_width = track_width/2;
-                path_breaker = true;
-            }
-            else{
-                linear_gradient = "url(#stroke-gradient)"
-            }
+            const pathWidth = color === '#F20000' ? trackWidth / 2 : trackWidth;
+            const pathBreaker = color === '#F20000';
+            const linearGradient = color === '#F20000' ? null : "url(#stroke-gradient)";
+
             if (!Array.isArray(track) || track.length === 0) return;
-            let trackDequeue  = updateTrackDequeue(track, boundaries,path_breaker).toArray();
-            let track_length = 0;
-            if(path_breaker){
-                for(let point of trackDequeue){
-                    track_length++;
-                    if(point[0]===pointPosition.x && point[1]===pointPosition.y){
+            
+            let trackDequeue = updateTrackDequeue(track, boundaries).toArray();
+            let trackLength = 0;
+
+            if (pathBreaker) {
+                for (let point of trackDequeue) {
+                    trackLength++;
+                    if (point[0] === pointPosition.x && point[1] === pointPosition.y) {
                         break;
-                    }  
+                    }
                 }
-                trackDequeue = trackDequeue.slice(0,track_length);
+                trackDequeue = trackDequeue.slice(0, trackLength);
             }
+
             svg.append('path')
                 .attr('d', lineGenerator(trackDequeue))
                 .attr('fill', 'none')
-                .attr('stroke', linear_gradient?linear_gradient:color)
-                .attr('stroke-width', path_width)
-                .attr('z-index',-1);
+                .attr('stroke', linearGradient || color)
+                .attr('stroke-width', pathWidth)
+                .attr('z-index', -1);
         };
 
-        drawTrackSegment(innerTrack, 'white');
-        drawTrackSegment(outerTrack, 'white');
-        drawTrackSegment(racepath, '#F20000');
+        drawTrackSegment(innerTrack.current, 'white');
+        drawTrackSegment(outerTrack.current, 'white');
+        drawTrackSegment(racePath.current, '#F20000');
 
-        function updateTrackDequeue(trackData,newBoundaries){
+        function updateTrackDequeue(trackData, newBoundaries) {
             const dequeue = new SimpleDeque();
-            for (let point of trackData) {             
+            for (let point of trackData) {
                 if (isPointInBounds(point, newBoundaries)) {
                     dequeue.pushBack(point);
                 } else if (!dequeue.isEmpty()) {
@@ -162,9 +174,9 @@ const Zoom_Animation = () => {
                 }
             }
             return dequeue;
-        };
+        }
 
-    }, [boundaries, pointPosition]);
+    }, [boundaries, pointPosition, lineGenerator]);
 
     return (
         <div>
@@ -173,4 +185,4 @@ const Zoom_Animation = () => {
     );
 }
 
-export default Zoom_Animation;
+export default ZoomAnimation;

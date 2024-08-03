@@ -1,8 +1,8 @@
-/* global google */
-import { GoogleMap, useJsApiLoader, Marker, Polyline, MarkerClusterer } from '@react-google-maps/api';
+// /* global google */
+import { GoogleMap, useJsApiLoader, Marker, Polyline } from '@react-google-maps/api';
 import { DarkModeStyles } from '../../Static/DarkModeStyles';
-import { useState, useEffect, useCallback,useRef } from 'react';
-
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import io from 'socket.io-client';
 import logo from '../../Assets/logo.svg';
 const MAX_MARKERS = 10;
@@ -10,9 +10,14 @@ const MAX_MARKERS = 10;
 const GMap = () => {
   const [racePath, setRacePath] = useState([]);
   const [carPosition, setCarPosition] = useState(null);
-  const [mapCenter, setMapCenter] = useState({ lat: 45.6217635762167, lng: 9.281490418085674});
-  const center = useRef({ lat: 45.6217635762167, lng: 9.281490418085674});
+  const [mapCenter, setMapCenter] = useState();
   const [disconnect,setDisconnect] = useState(false);
+  const mapType = useSelector(state => state.map.mapType);
+
+  useEffect(()=>{
+    const center = mapType === "Monza" ? { lat: 45.6217635762167, lng: 9.281490418085674} : {lat:38.710700, lng:-84.915700}
+    setMapCenter(center)
+  },[mapType])
 
   useEffect(() => {
     const mapSocket = io(process.env.REACT_APP_SERVER_URL);
@@ -52,7 +57,7 @@ const GMap = () => {
       mapSocket.disconnect();
       setRacePath([]);
     };
-  }, []);
+  },[]);
 
   const updateCarPosition = (latitude, longitude) => {
     const newCarPosition = { lat: latitude, lng: longitude };
@@ -81,24 +86,6 @@ const GMap = () => {
         <div className=''>
           <div className='py-2'>
             <GoogleMap
-                mapContainerStyle={{ width: 550, height: 350 }}
-                zoom={14}
-                center={{lat:45.622632, lng:9.288045}}
-                options={{ styles: DarkModeStyles}}
-                heading={90}
-                tilt={45}
-              >
-                {carPosition && <Marker position={carPosition} icon={{
-                  url:logo,
-                  scaledSize: new window.google.maps.Size(20, 20)
-                }}/>}
-                {racePath.length > 1 && (
-                  <Polyline path={racePath} options={{ strokeColor: '#FF0000', strokeOpacity: 0.5, strokeWeight: 3}} />
-                )}
-              </GoogleMap>
-          </div>
-          <div className='py-2'>
-            <GoogleMap
               mapContainerStyle={{ width: 550, height: 350 }}
               zoom={19}
               center={mapCenter}
@@ -113,8 +100,24 @@ const GMap = () => {
               )}
             </GoogleMap>
           </div>
-          
-
+          <div className='py-2'>
+            <GoogleMap
+                mapContainerStyle={{ width: 550, height: 350 }}
+                zoom={15}
+                center={mapCenter}
+                options={{ styles: DarkModeStyles}}
+                heading={90}
+                tilt={45}
+              >
+                {carPosition && <Marker position={carPosition} icon={{
+                  url:logo,
+                  scaledSize: new window.google.maps.Size(20, 20)
+                }}/>}
+                {racePath.length > 1 && (
+                  <Polyline path={racePath} options={{ strokeColor: '#FF0000', strokeOpacity: 0.5, strokeWeight: 3}} />
+                )}
+              </GoogleMap>
+          </div>
         </div>
         
       ) : (
