@@ -64,7 +64,7 @@ const Dashboard = () => {
   // }
 
   return (
-    <div className="flex flex-row w-full">
+    <div className="flex flex-row w-full space-x-16">
       {/* {(initializing || !controls || !perception || !localization || !done) && !close && <PopUpMessage message={msg} closePopup={handleclosePopup}/>} */}
         <Overview />
         <Map />

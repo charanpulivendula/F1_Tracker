@@ -1,6 +1,5 @@
 /* global google */
 import { GoogleMap, useJsApiLoader, Marker, Polyline, MarkerClusterer } from '@react-google-maps/api';
-import { DarkModeStyles } from '../../Static/DarkModeStyles';
 import { useState, useEffect, useCallback,useRef } from 'react';
 
 import io from 'socket.io-client';

@@ -1,11 +1,24 @@
-import React from 'react'
+import GMap from './GMap';
+import RaceMapPlanar from './RaceMapPlanar';
+import LapsInfo from './LapsInfo'
+import { useSelector } from 'react-redux';
 
 const Map = () => {
-  return (
-    <div className='w-1/2 border-box bg-red-200 h-full'>
-        hello
-    </div>
-  )
-}
+  const mapType = useSelector(state => state.map.mapType)
 
-export default Map
+  console.log(mapType);
+  
+  const selectedMap = mapType === 'Google' ? <GMap/> : <RaceMapPlanar/>;
+
+  return (
+    <div className='flex-col h-full'>
+      <LapsInfo/>
+      <div className='mt-8'>
+        {selectedMap}
+      </div>
+    </div>
+  );
+};
+
+export default Map;
+

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Red from './Red';
-import Green from './Green';
+import Red from '../Miscellaneous/Red';
+import Green from '../Miscellaneous/Green';
 import React from 'react'
 
 const Communication = ()=>{
@@ -11,7 +11,7 @@ const Communication = ()=>{
             <div className="heading">
                 COMMUNICATION
             </div>
-            <div className="flex flex-col bg-[#1A1A1A] h-12 rounded-lg px-5 justify-center">
+            <div className="flex flex-col bg-boxColor h-12 rounded-lg px-5 justify-center">
                 <div className="flex items-center space-x-5">
                     <div>
                         {statusColor}

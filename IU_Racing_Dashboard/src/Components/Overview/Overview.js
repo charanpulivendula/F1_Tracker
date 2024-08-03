@@ -1,6 +1,7 @@
 import React from 'react'
 import Live from './Live'
 import CarStatus from '../CarStatus/CarStatus'
+import Modes from './Modes'
 
 const Overview = () => {
   return (
@@ -10,7 +11,7 @@ const Overview = () => {
             <Live/>
           </div>
           <div className='w-1/4'>
-
+            <Modes/>
           </div>
 
         </div>
