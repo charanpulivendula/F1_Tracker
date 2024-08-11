@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+message RacecarData {
+    message Speed {
+        double vehicle_speed_kmph = 1;          // Racecar speed states
+        double round_target_speed = 2;          // Commanded Speed
+    }
+    // "Tire" defines tire tempurature relative to driver seat
+    message Tire {
+        double front_right = 1;
+        double front_left = 2;
+        double rear_right = 3;
+        double rear_left = 4;
+    }
+
+    //'Location' defines location of the car 
+    message Location {
+        double latitude=1;
+        double longitude=2;
+    }
+
+    message BrakePressure {
+        int32 f_brake_pressure_cmd = 1;
+        int32 r_brake_pressure_cmd = 2;
+    }
+
+    message Throttle {
+        double actual_throttle = 1;             // Actual Throttle 
+        double cmd_throttle = 2;                // Command Throttle
+    }
+
+    message Brake {
+        double actual_brake_front = 1;          // Brake Front
+        double actual_brake_rear = 2;           // Brake Rear
+        double cmd_brake = 3;                   // command Brake  
+    }
+
+    message Gear {
+        int32 actual_gear = 1;                     // Actual Gear
+        int32 cmd_gear = 2;                     // Command Gear
+    }
+
+    message Steering {
+        double actual_steering_degree = 1;       // Actual steering angle
+        double cmd_steering_degree = 2;          // Command Steering angle in degrees
+    }
+
+    message Planning_Points{
+        double x = 1;
+        double y = 2;
+        double z = 3;
+    }
+
+    message Errors {
+        double heading_error = 1;
+        double cross_track_error = 2;
+        double velocity_error = 3;
+    }
+
+    Speed speed = 1;
+    Tire tire_temp = 2;                     // Tire temperature 
+    Throttle throttle = 3;                   // Throttle
+    Brake brake = 4;                         // brakes actual and command
+    Gear gear = 5;                         // Transmission gear state
+    int32 ct_state = 6;                     // CT state
+    int32 ct_state_rolling_counter = 7;         // System heartbeat
+    int32 sys_state = 8;                    // System State
+    string system = 9;                      // System identifier or status
+    double engine_speed_rpm = 10;              // Revolutions per minute
+    Steering steering = 11;
+    BrakePressure brake_pressure = 12;       // Brake Pressure        
+    bool disconnected = 13;                 // Car connectivity state
+    Planning_Points points = 14;            //car position
+    int32 track_flag = 15;                    // Current track flag state 
+    int32 veh_flag = 16;                    // Current vehicle flag state
+    Location location = 17;                // Location
+    double coolant_temperature = 18;       // Coolant temperature
+    double engine_oil_pressure_kpa = 19;   // Oil pressure of the engine
+    int32 lap_count = 20;                  // Lap Count
+    Errors errors = 21;                    
+    int32 laps = 22;
+    int32 raceline_index = 23;            // PIT or RaceLine
+}

@@ -3,7 +3,7 @@ import ControlMeter from "./ControlMeter";
 import CarDisplayControls from "./CarDisplayControls";
 const CarDisplay = ()=>{
     return(
-        <div className="flex space-x-16">
+        <div className="flex space-x-20">
             <div className="w-3/4">
                 <Speedometer/>
             </div>

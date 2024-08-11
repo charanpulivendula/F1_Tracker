@@ -7,7 +7,8 @@ import "react-circular-progressbar/dist/styles.css";
 import { io } from "socket.io-client";
 
 const Speedometer = () => {
-    const [speed, setSpeed] = useState(87);
+    const [actualSpeed, setActualSpeed] = useState(200);
+    const [cmdSpeed,setCmdSpeed] = useState(87);
     const [rotation, setRotation] = useState(0);
     const [maxSpeed, setMaxSpeed] = useState(10);
     const [RPM, setRPM] = useState(0);
@@ -22,11 +23,19 @@ const Speedometer = () => {
             console.log('Speedometer Disconnected from server');
         });
 
-        speedSocket.on('currentspeed', (data) => {
-            setSpeed(data);
+        speedSocket.on('speed', (string) => {
+            const data = JSON.parse(string);
+            if('vehicleSpeedKmph' in data){
+                setActualSpeed(Math.round(data.vehicleSpeedKmph));
+            }
+            if('roundTargetSpeed' in data){
+                console.log(data);
+                setCmdSpeed(Math.round(data.roundTargetSpeed));
+            }
+
         });
         speedSocket.on('rpm', (data) => {
-            setRPM(data);
+            setRPM(Math.round(data));
         });
 
         return () => {
@@ -36,12 +45,14 @@ const Speedometer = () => {
 
     useEffect(() => {
         const maxSpeedValue = 300;
-        const minRotation = 212; // Rotation angle at 0 km/h
-        const maxRotation = 572; // Rotation angle at 300 km/h
-        const speedRatio = speed / maxSpeedValue;
-        const rotationAngle = minRotation + (maxRotation - minRotation) * speedRatio;
+        const minRotation = 222; // Rotation angle at 0 km/h
+        const maxRotation = 582; // Rotation angle at 300 km/h
+        const speedRatio = actualSpeed / maxSpeedValue;
+        const rotationAngle = minRotation + (maxRotation - minRotation) * (speedRatio-speedRatio/20);
         setRotation(rotationAngle);
-    }, [speed]);
+    
+        setMaxSpeed((prevSpeed)=>Math.max(prevSpeed,actualSpeed));
+    }, [actualSpeed]);
 
     return (
         <div className='flex'>
@@ -79,7 +90,7 @@ const Speedometer = () => {
                                 <div className="absolute">
                                     <div className="relative w-[391.5px] h-[391.5px] bg-[100%_100%]">
                                         <CircularProgressbar
-                                            value={speed}
+                                            value={actualSpeed}
                                             maxValue={300}
                                             circleRatio={0.94}
                                             styles={buildStyles({
@@ -99,19 +110,22 @@ const Speedometer = () => {
                                 <div className="absolute w-[265px] h-[282.5px] top-[36.5px] left-[65px]">
                                     <div className="absolute w-[262px] h-[230.5px] top-[3.5px] left-0">
                                         <img
-                                            className={`absolute w-[200px] h-[280px] top-4 left-[34.5px] transform transition-transform`}
+                                            className={`absolute w-[200px] h-[280px] top-4 left-[30px] transform transition-transform`}
                                             alt="Vector"
                                             src={marker}
                                             style={{ transform: `rotate(${rotation}deg)` }}
                                         />
-                                        <div className="w-[262px] top-[90px] right-[10px] [font-family:'Michroma',Helvetica] font-normal text-white text-[100px] text-center absolute tracking-[0] leading-[normal]">
-                                            {speed}
+                                        <div className="w-[262px] top-[90px] right-[10px] [font-family:'Michroma',Helvetica] font-normal number text-[100px] text-center absolute tracking-[0] leading-[normal]">
+                                            {actualSpeed}
+                                        </div>
+                                        <div className="w-[262px] top-[210px] right-[10px] [font-family:'Michroma',Helvetica] font-normal number text-[40px] text-center absolute tracking-[0] leading-[normal]">
+                                            {cmdSpeed}
                                         </div>
                                         <div className="absolute top-[58.5px] left-[77.5px] [font-family:'Archivo',Helvetica] font-normal text-white text-[32px] tracking-[0] leading-[normal] whitespace-nowrap">
                                             Current
                                         </div>
                                     </div>
-                                    <div className="absolute top-[256.5px] left-[104px] [font-family:'Archivo',Helvetica] font-normal text-white text-[24px] tracking-[0] leading-[normal] whitespace-nowrap">
+                                    <div className="absolute top-[270.5px] left-[104px] [font-family:'Archivo',Helvetica] font-normal text-white text-[24px] tracking-[0] leading-[normal] whitespace-nowrap">
                                         km/h
                                     </div>
                                 </div>

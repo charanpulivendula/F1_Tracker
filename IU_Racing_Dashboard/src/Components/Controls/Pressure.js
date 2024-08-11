@@ -1,9 +1,44 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import { io } from "socket.io-client";
+
 const Pressure = ()=>{
     const [coolantTemp,setCoolantTemp] = useState(104)
     const [oilPressure, setOilPressure] = useState(323)
-    const [front, setFront] = useState(124)
-    const [rear, setRear] = useState(124)
+    const [frontPressure, setFrontPressure] = useState(124)
+    const [rearPressure, setRearPressure] = useState(124)
+
+    useEffect(() => {
+        const pressureSocket = io(process.env.REACT_APP_SERVER_URL);
+
+        pressureSocket.on('connect', () => {
+            console.log('Pressure Monitor Connected to server');
+        });
+
+        pressureSocket.on('disconnect', () => {
+            console.log('Pressure Monitor Disconnected from server');
+        });
+
+        pressureSocket.on('coolanttemperature', (string) => {
+            setCoolantTemp(string)
+        });
+        pressureSocket.on('oilpressure', (string) => {
+            setOilPressure(string)
+        });
+
+        pressureSocket.on('brakepressure', (string) => {
+            const data = JSON.parse(string);
+            if ('fBrakePressureCmd' in data){
+                setFrontPressure(Math.round(data.fBrakePressureCmd));
+            }
+            if ('rBrakePressureCmd' in data){
+                setRearPressure(Math.round(data.rBrakePressureCmd));
+            }
+        });
+
+        return () => {
+        pressureSocket.disconnect();
+        };
+    }, []);
     return (
         <div className="flex-col space-y-10">
             <div className="flex space-x-5">
@@ -30,19 +65,19 @@ const Pressure = ()=>{
                 </div>
                 <div className="space-y-10 mt-3">
                     <div className="flex justify-center items-center w-full">
-                        <div className="number text-left text-2xl w-2/3">
+                        <div className="number text-left text-2xl w-[60%]">
                             Front
                         </div>
-                        <div className="flex justify-center items-center w-1/3 bg-boxColor rounded-lg text-xl number h-10">
-                            {front}
+                        <div className="flex justify-center items-center w-[40%] bg-boxColor rounded-lg text-xl number h-10">
+                            {frontPressure}
                         </div>
                     </div>
                     <div className="flex justify-center items-center w-full">
-                        <div className="number text-left text-2xl w-2/3">
+                        <div className="number text-left text-2xl w-[60%]">
                             Rear
                         </div>
-                        <div className="flex justify-center items-center w-1/3 bg-boxColor rounded-lg text-xl number h-10">
-                            {rear}
+                        <div className="flex justify-center items-center w-[40%] bg-boxColor rounded-lg text-xl number h-10">
+                            {rearPressure}
                         </div>
                     </div>
                 </div>

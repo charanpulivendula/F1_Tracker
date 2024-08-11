@@ -7,7 +7,7 @@ import {
   import "react-circular-progressbar/dist/styles.css";
 import progress_circle from '../../Assets/progress_circle.svg';
 
-const ControlMeter = ({ name, color, maxValue,value }) => {
+const ControlMeter = ({ name, color, maxValue,value, cmdvalue }) => {
 
   return (
     
@@ -19,7 +19,7 @@ const ControlMeter = ({ name, color, maxValue,value }) => {
                 maxValue={maxValue}
                 circleRatio={1}
                 styles={buildStyles({
-                  rotation: 0.25,
+                  rotation: 0.5,
                   strokeLinecap: "butt",
                   trailColor: "#000",
                   pathColor: color,
@@ -35,11 +35,14 @@ const ControlMeter = ({ name, color, maxValue,value }) => {
         src={progress_circle}
         />
         <div className="absolute w-[80px] h-[70px] top-[20px]">
-            <div className="absolute w-[80px] h-[70px] top-[10px] left-[10px] text font-family:'Archivo',Helvetica] font-normal text-white text-[12px] tracking-[0] leading-[normal] whitespace-nowrap">
+            <div className="absolute w-[80px] h-[70px] top-[10px] left-[10px] text font-normal text text-[12px] tracking-[0] leading-[normal] whitespace-nowrap">
             {name}
             </div>
-            <div className="absolute number w-[80px] h-[70px] top-[20px] left-[10px] font-family:'Archivo',Helvetica] font-normal text-white text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">
+            <div className="absolute number w-[80px] h-[70px] top-[20px] left-[10px] font-normal number text-[15px] tracking-[0] leading-[normal] whitespace-nowrap">
             {value}
+            </div>
+            <div className="absolute number w-[80px] h-[70px] top-[40px] left-[10px] font-normal number text-[8px] tracking-[0] leading-[normal] whitespace-nowrap">
+            {cmdvalue}
             </div>
         </div>
     </div>

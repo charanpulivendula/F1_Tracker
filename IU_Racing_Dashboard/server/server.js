@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const csv = require('csv-parser');
 const protobuf = require('protobufjs');
-const proto = protobuf.loadSync('./racing_data.proto');
+const proto = protobuf.loadSync('./racing.proto');
 const dgram = require('dgram');
 const http = require('http');
 const app = express();
@@ -16,32 +16,13 @@ const { log } = require('console');
 let latestData;
 const Track_Flag_List = ['green', 'yellow', 'red'];
 const Vehicle_Flag_List = ['purple', 'yellow', 'blue', 'orange', 'grey'];
-const heartbeatImages = ['samosa', 'circle', 'wrong']; 
-
-
-const TrackCondition = {
-  0: "null",
-  3: "red",
-  9: "yellow",
-  1: "green",
-  37: "wavinggreen",
-  4: "checkered",
-  255: "default"
-};
-
-const VehicleFlagObj = {
-  0: "null",
-  25: "orange",
-  2: "blue",
-  4: "grey",
-  7: "yellow",
-  34: "stop",
-  32: "purple",
-  33: "enginekill",
-  36: "attacker",
-  35: "defender",
-  255: "default"
-};
+const heartbeatImages = ['samosa', 'circle', 'wrong'];
+const enums = require('./Enums')
+const TrackCondition = enums.TRACK_CONDITION;
+const VehicleFlagObj = enums.VEHICLE_FLAG_OBJ;
+const CT_STATE = enums.CT_STATE;
+const SYS_STATE = enums.SYS_STATE;
+const HEARTBEAT = enums.HEARTBEAT;
 
 app.use(cors());
 
@@ -104,46 +85,88 @@ udpServer.on('error', (err) => {
 });
 
 udpServer.on('message', (msg) => {
-  const decodedData = RacingData.decode(msg);
-  latestData = RacingData.toObject(decodedData, {
-    defaults: true,
-    longs: String,
-    enums: String,
-    bytes: String,
-  });
-  console.log(latestData);
-  if (latestData.speed!=null && latestData.speed.current!=0){
-    latestData.speed.current=Math.floor(latestData.speed.current);
-    io.emit('currentspeed',latestData.speed.current);
-  }
-  if(latestData.rpm!=0){
-    io.emit('rpm',latestData.rpm);
-  }
-  if(latestData.throttle!=0){
-    io.emit('throttle',Math.floor(latestData.throttle));
-  }
-  if(latestData.gear!=0){
-    io.emit('gear',latestData.gear);
+  const latestData = RacingData.decode(msg);
+  // latestData = RacingData.toObject(decodedData, {
+  //   defaults: true,
+  //   longs: String,
+  //   enums: String,
+  //   bytes: String,
+  // });
+  // console.log(latestData);
+  if (latestData.speed!=null){
+    io.emit('speed',JSON.stringify(latestData.speed));
   }
   if(latestData.tireTemp && !checkNullValues(latestData.tireTemp))
   { 
     io.emit('tireTemp',JSON.stringify(latestData.tireTemp));
   }
+  if(latestData.throttle!=null){
+    io.emit('throttle',JSON.stringify(latestData.throttle));
+  }
+  if(latestData.brake != null){
+    io.emit('brake',JSON.stringify(latestData.brake))
+  }
+  if(latestData.racelineIndex != null){
+    console.log(latestData.racelineIndex);
+    io.emit('raceorpit',latestData.racelineIndex)
+  }
+  if(latestData.gear!=null){
+    io.emit('gear',JSON.stringify(latestData.gear));
+  }
+  if(latestData.ctState!=0){
+    io.emit('ctstate',latestData.ctState+" "+CT_STATE[latestData.ctState]);
+  }
+  if(latestData.ctStateRollingCounter!=0){
+    io.emit('heartbeat',latestData.ctStateRollingCounter);
+  }
+  if(latestData.sysState!=0){
+    io.emit('sysstate',latestData.sysState+" "+SYS_STATE[latestData.sysState]);
+  }
+  if(latestData.system!=""){
+    io.emit('system',latestData.system);
+  }
+  if(latestData.engineSpeedRpm!=0){
+    io.emit('rpm',latestData.engineSpeedRpm);
+  }
+  if(latestData.steering!=null){
+    io.emit('steering',JSON.stringify(latestData.steering));
+  } 
+  if(latestData.brakePressure!=null){
+    io.emit("brakepressure",JSON.stringify(latestData.brakePressure))
+  }
+  if(latestData.disconnected!=0){
+    io.emit('connection',latestData.disconnected);
+  }
+  if(latestData.points!=null){
+    io.emit("planningpoints",JSON.stringify(latestData.points))
+  }
   if(latestData.trackFlag!=0){
-    io.emit('trackFlag',TrackCondition[latestData.trackFlag]);
+    if(''+latestData.trackFlag in TrackCondition){
+      io.emit('trackFlag',TrackCondition[latestData.trackFlag]);
+    }
   }
-  if(latestData.vehicleFlag!=0){
-    io.emit('vehicleFlag',VehicleFlagObj[latestData.vehicleFlag]);
+  if(latestData.vehFlag!=0){
+    if(''+latestData.vehFlag in VehicleFlagObj){
+      io.emit('vehicleFlag',VehicleFlagObj[latestData.vehFlag]);
+    }
   }
-  if(latestData.location!==null){
+  if(latestData.location!==null && Object.keys(latestData.location).length==2){
     io.emit('location',JSON.stringify(latestData.location));
   }
- 
-  // Object.keys(latestData).forEach(field => {
-  //   io.emit(field, latestData[field]);
-  // });
-  if(latestData.steeringAngle!=0){
-    io.emit('steeringAngle',Math.floor(latestData.steeringAngle));
+  if(latestData.coolantTemperature!=0){
+    io.emit('coolanttemperature',Math.round(latestData.coolantTemperature));
+  }
+  if(latestData.engineOilPressureKpa!=0){
+    io.emit('oilpressure',Math.round(latestData.engineOilPressureKpa));
+  }
+  if(latestData.lapCount!=0){
+    io.emit('lapcount',latestData.lapCount);
+  }
+  if(latestData.errors!=null){
+    io.emit("errors",JSON.stringify(latestData.errors))
+  }
+  if(latestData.laps!=0){
+    io.emit('laps',latestData.laps);
   }
 });
 
@@ -166,12 +189,6 @@ udpServer.bind({
   address: UDP__LISTENING_IP
 });
 
-setInterval(() => {
-  const randomData = generateRandomData();
-  Object.keys(randomData).forEach(field => {
-    io.emit(field, randomData[field]);
-  });
-}, 5000);
 
 
 const sendUdpMessage = (message) => {
@@ -184,11 +201,11 @@ const sendUdpMessage = (message) => {
   });
 };
 
-setInterval(() => {
-  const randomData = generateRandomData();
-  sendUdpMessage(randomData);
-  // console.log("message sent");
-}, 5000);
+// setInterval(() => {
+//   const randomData = generateRandomData();
+//   sendUdpMessage(randomData);
+//   // console.log("message sent");
+// }, 5000);
 
 const generateRandomData = () => {
   return {

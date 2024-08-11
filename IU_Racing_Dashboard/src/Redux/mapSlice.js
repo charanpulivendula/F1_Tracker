@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const mapSlice = createSlice({
   name: 'map',
   initialState: {
-    mapType: 'Monza', // default value
+    mapType: 'KY', // default value
   },
   reducers: {
     setMapType: (state, action) => {

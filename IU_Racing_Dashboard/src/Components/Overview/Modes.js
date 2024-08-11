@@ -27,9 +27,9 @@ const Modes = ()=>{
                     value={mapValue}
                     onChange={handleMapChange}
                 >   
-                    <option value="Monza">Monza</option>
                     <option value="KY">KY</option>
                     <option value="Google">Google</option>
+                    <option value="Monza">Monza</option>
                     <option value="IN">IN</option>
                 </select>
             </div>

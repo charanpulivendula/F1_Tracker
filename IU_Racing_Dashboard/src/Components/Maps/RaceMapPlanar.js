@@ -1,64 +1,88 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as d3 from 'd3';
 import monza_race_json from '../../Static/monza_race.json';
 import kentucky_race_json from '../../Static/Kentucky_RaceLine.json';
+import kentucky_pit_lane from '../../Static/kentucky_pit_lane.json';
 import ZoomAnimation from './ZoomAnimation';
 import startImage from '../../Assets/start.png';
 import startDir from '../../Assets/start_dir.png';
 import { io } from 'socket.io-client';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { setCarPosition } from '../../Redux/locationSlice';
 
 const RaceMapPlanar = () => {
   const svgRef = useRef(null);
   const pathRef = useRef(null);
-  const [carPosition, setCarPosition] = useState(null);
+  const pitRef = useRef(null);
+  const carPosition = useSelector(state=>state.location_points.carPosition)
   const [raceTrack, setRaceTrack] = useState([]);
+  const [pitLane, setPitLane] = useState([]);
   const [bounds, setBounds] = useState({ minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity });
   const mapType = useSelector(state => state.map.mapType);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // Update raceTrack based on mapType
+    // Update raceTrack and pitLane based on mapType
     const track = mapType === "Monza" ? monza_race_json : kentucky_race_json;
+    const pit = mapType === "KY" ? kentucky_pit_lane : [];
     setRaceTrack(track);
+    setPitLane(pit);
   }, [mapType]);
+  const startPoint = mapType === "KY" ? {x: -21.441607590624628,
+    y: -42.29719179722661}:{}
 
   useEffect(() => {
-    // Calculate bounds whenever raceTrack is updated
-    if (raceTrack.length > 0) {
+    // Calculate bounds whenever raceTrack or pitLane is updated
+    if (raceTrack.length > 0 || pitLane.length > 0) {
       let min_x = Infinity, max_x = -Infinity, min_y = Infinity, max_y = -Infinity;
-      raceTrack.forEach(element => {
-        min_x = Math.min(element.x, min_x);
-        max_x = Math.max(element.x, max_x);
-        min_y = Math.min(element.y, min_y);
-        max_y = Math.max(element.y, max_y);
-      });
+      
+      const updateBounds = (data) => {
+        data.forEach(element => {
+          min_x = Math.min(element.x, min_x);
+          max_x = Math.max(element.x, max_x);
+          min_y = Math.min(element.y, min_y);
+          max_y = Math.max(element.y, max_y);
+        });
+      };
+
+      updateBounds(raceTrack);
+      updateBounds(pitLane);
+      
       setBounds({ minX: min_x, maxX: max_x, minY: min_y, maxY: max_y });
     }
-  }, [raceTrack]);
+  }, [raceTrack, pitLane]);
 
   useEffect(() => {
-    if (raceTrack.length === 0) return; // Exit if no data
+    if (raceTrack.length === 0 && pitLane.length === 0) return; // Exit if no data
 
     const drawPath = () => {
       const svg = d3.select(svgRef.current);
       svg.selectAll('*').remove(); // Clear previous elements
 
-      const path = d3.select(svgRef.current).append('path');
       const xScale = d3.scaleLinear().domain([bounds.minX - 50, bounds.maxX + 50]).range([550, 0]);
-      const yScale = d3.scaleLinear().domain([bounds.minY - 50, bounds.maxY + 50]).range([350, 0]);
+      const yScale = d3.scaleLinear().domain([bounds.minY - 50, bounds.maxY + 50]).range([350,0]);
       const pathGenerator = d3.line()
         .x(d => xScale(d.x))
         .y(d => yScale(d.y))
         .curve(d3.curveLinear);
 
-      path.datum(raceTrack)
+      // Draw race track
+      const pathRace = d3.select(svgRef.current).append('path');
+      pathRace.datum(raceTrack)
         .attr('d', pathGenerator)
         .attr('stroke', '#B0B0B0')
         .attr('stroke-width', 5)
         .attr('fill', 'none');
 
+      // Draw pit lane
+      const pathPit = d3.select(svgRef.current).append('path');
+      pathPit.datum(pitLane)
+        .attr('d', pathGenerator)
+        .attr('stroke', '#FFFFFF') // Different color for pit lane
+        .attr('stroke-width', 3)
+        .attr('fill', 'none');
+
       // Add start image
-      const startPoint = raceTrack[0];
       const startX = xScale(startPoint.x);
       const startY = yScale(startPoint.y);
 
@@ -78,22 +102,22 @@ const RaceMapPlanar = () => {
     };
 
     drawPath();
-  }, [raceTrack, bounds]);
+  }, [raceTrack, pitLane, bounds]);
 
   useEffect(() => {
     const socket = io(process.env.REACT_APP_SERVER_URL);
 
     socket.on('connect', () => {
-      console.log('Socket connected');
+      console.log('Map_Socket connected');
     });
 
     socket.on('disconnect', () => {
-      console.log('Socket disconnected');
+      console.log('Map_Socket disconnected');
     });
 
-    socket.on('location', (data) => {
+    socket.on('planningpoints', (data) => {
       try {
-        const { x, y } = JSON.parse(data);
+        const { x, y, z } = JSON.parse(data);
         if (isFinite(x) && isFinite(y)) {
           updateCarPosition(x, y);
         } else {
@@ -114,14 +138,13 @@ const RaceMapPlanar = () => {
   }, []);
 
   const updateCarPosition = (x, y) => {
-    setCarPosition({ x, y });
+     dispatch(setCarPosition({x,y}))
   };
-
+  
   useEffect(() => {
     if (carPosition && bounds.minX !== Infinity) {
       const xScale = d3.scaleLinear().domain([bounds.minX - 50, bounds.maxX + 50]).range([550, 0]);
       const yScale = d3.scaleLinear().domain([bounds.minY - 50, bounds.maxY + 50]).range([350, 0]);
-
       const svg = d3.select(svgRef.current);
       svg.selectAll('.car')
         .data([carPosition])

@@ -4,21 +4,24 @@ import monza_boundaries_json from '../../Static/monza_boundaries.json';
 import monza_race_json from '../../Static/monza_race.json';
 import kentucky_race_json from '../../Static/Kentucky_RaceLine.json';
 import Kentucky_boundaries_json from '../../Static/Kentucky_Boundaries.json';
+import kentucky_pit_lane from '../../Static/kentucky_pit_lane.json';
 import SimpleDeque from './SimpleDequeue';
 import { useSelector } from "react-redux";
 
 const ZoomAnimation = () => {
+    const ZOOM = 20;  // zoom in '+' //Zoom out '-'
     const mapDictionary = {
-        Monza: [monza_race_json, monza_boundaries_json],
-        KY: [kentucky_race_json, Kentucky_boundaries_json]
+        Monza: [monza_race_json, monza_boundaries_json, []],
+        KY: [kentucky_race_json, Kentucky_boundaries_json, kentucky_pit_lane],
+        IN: []
     };
 
     const svgRef = useRef(null);
     const mapType = useSelector(state => state.map.mapType);
+    const carPosition = useSelector(state => state.location_points.carPosition);
     const [trackLineJson, setTrackLineJson] = useState(null);
     const [trackBoundaries, setTrackBoundaries] = useState(null);
-    const [pointPosition, setPointPosition] = useState({ x: 0, y: 0 });
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [pitLane, setPitLane] = useState([]);
     const [boundaries, setBoundaries] = useState({
         topLeft: { x: 0, y: 0 },
         topRight: { x: 0, y: 0 },
@@ -30,30 +33,33 @@ const ZoomAnimation = () => {
     const width = 550;
     const height = 350;
     const padding = 24;
-    const zoom = 20;  // zooming is reverse
     const centerX = width / 2;
     const centerY = height / 2;
 
     const innerTrack = useRef([]);
     const outerTrack = useRef([]);
     const racePath = useRef([]);
+    const pitLanePath = useRef([]);
+    const raceline = useRef([]);
 
     useEffect(() => {
         // Load and set track data based on mapType
         if (mapDictionary[mapType]) {
-            const [raceData, boundaryData] = mapDictionary[mapType];
+            const [raceData, boundaryData, pitData] = mapDictionary[mapType];
             setTrackLineJson(raceData);
             setTrackBoundaries(boundaryData);
+            setPitLane(pitData);
         }
-    }, [mapType, mapDictionary]);
+    }, [mapType]);
 
     useEffect(() => {
         if (trackBoundaries && trackLineJson) {
-            innerTrack.current = trackBoundaries.map(element => [-element.inner_x, -element.inner_y]);
-            outerTrack.current = trackBoundaries.map(element => [-element.outer_x, -element.outer_y]);
-            racePath.current = trackLineJson.map(element => [-element.x, -element.y]);
+            innerTrack.current = trackBoundaries.map(element => [element.inner_x, element.inner_y]);
+            outerTrack.current = trackBoundaries.map(element => [element.outer_x, element.outer_y]);
+            racePath.current = trackLineJson.map(element => [element.x, element.y]);
+            pitLanePath.current = pitLane.map(element => [element.x, element.y]);
         }
-    }, [trackBoundaries, trackLineJson]);
+    }, [trackBoundaries, trackLineJson, pitLane]);
 
     const xDomain = [boundaries.topLeft.x, boundaries.bottomRight.x];
     const yDomain = [boundaries.topLeft.y, boundaries.bottomRight.y];
@@ -73,7 +79,7 @@ const ZoomAnimation = () => {
 
     const isPointInBounds = (point, boundaries) => {
         return point[0] >= boundaries.topLeft.x && point[0] <= boundaries.topRight.x &&
-               point[1] >= boundaries.topLeft.y && point[1] <= boundaries.bottomLeft.y;
+            point[1] >= boundaries.topLeft.y && point[1] <= boundaries.bottomLeft.y;
     };
 
     useEffect(() => {
@@ -88,21 +94,14 @@ const ZoomAnimation = () => {
             .attr('stroke', 'black')
             .attr('stroke-width', 2);
 
-        const intervalId = setInterval(() => {
-            const index = (currentIndex) % racePath.current.length;
-            const [x, y] = racePath.current[index];
-
-            setPointPosition({ x, y });
-            setCurrentIndex(prevIndex => (prevIndex + 1) % racePath.current.length);
-
-            setBoundaries({
-                topLeft: { x: x - zoom, y: y - zoom },
-                topRight: { x: x + zoom, y: y - zoom },
-                bottomLeft: { x: x - zoom, y: y + zoom },
-                bottomRight: { x: x + zoom, y: y + zoom }
-            });
-        }, 50);
-
+        // Update boundaries based on car position
+        setBoundaries({
+            topLeft: { x: carPosition.x - ZOOM, y: carPosition.y - ZOOM },
+            topRight: { x: carPosition.x + ZOOM, y: carPosition.y - ZOOM },
+            bottomLeft: { x: carPosition.x - ZOOM, y: carPosition.y + ZOOM },
+            bottomRight: { x: carPosition.x + ZOOM, y: carPosition.y + ZOOM }
+        });
+        
         // Define gradient
         const gradient = svg.append("defs")
             .append("linearGradient")
@@ -114,7 +113,7 @@ const ZoomAnimation = () => {
 
         gradient.append("stop")
             .attr("offset", "0%")
-            .attr("stop-color", "B0B0B0");
+            .attr("stop-color", "#B0B0B0");
         gradient.append("stop")
             .attr("offset", "25%")
             .attr("stop-color", "white");
@@ -123,46 +122,32 @@ const ZoomAnimation = () => {
             .attr("stop-color", "white");
         gradient.append("stop")
             .attr("offset", "100%")
-            .attr("stop-color", "B0B0B0");
+            .attr("stop-color", "#B0B0B0");
 
-        return () => clearInterval(intervalId);
-    }, [pointPosition, currentIndex, centerX, centerY, boundaries]);
+    }, [carPosition, centerX, centerY]);
 
     useEffect(() => {
         const svg = d3.select(svgRef.current);
         svg.selectAll("path").remove();
 
-        const drawTrackSegment = (track, color) => {
-            const pathWidth = color === '#F20000' ? trackWidth / 2 : trackWidth;
-            const pathBreaker = color === '#F20000';
-            const linearGradient = color === '#F20000' ? null : "url(#stroke-gradient)";
-
+        const drawTrackSegment = (track, color, pathWidth) => {
             if (!Array.isArray(track) || track.length === 0) return;
-            
+
             let trackDequeue = updateTrackDequeue(track, boundaries).toArray();
-            let trackLength = 0;
-
-            if (pathBreaker) {
-                for (let point of trackDequeue) {
-                    trackLength++;
-                    if (point[0] === pointPosition.x && point[1] === pointPosition.y) {
-                        break;
-                    }
-                }
-                trackDequeue = trackDequeue.slice(0, trackLength);
-            }
-
             svg.append('path')
                 .attr('d', lineGenerator(trackDequeue))
                 .attr('fill', 'none')
-                .attr('stroke', linearGradient || color)
+                .attr('stroke', color)
                 .attr('stroke-width', pathWidth)
                 .attr('z-index', -1);
         };
 
-        drawTrackSegment(innerTrack.current, 'white');
-        drawTrackSegment(outerTrack.current, 'white');
-        drawTrackSegment(racePath.current, '#F20000');
+        drawTrackSegment(innerTrack.current, 'white', trackWidth);
+        drawTrackSegment(outerTrack.current, 'white', trackWidth);
+        
+        drawTrackSegment(pitLanePath.current, '#FFFFFF', 3); // Pit lane with different color and width
+        updateRaceline(carPosition, boundaries);
+        drawTrackSegment(raceline.current, '#F20000', trackWidth / 2);
 
         function updateTrackDequeue(trackData, newBoundaries) {
             const dequeue = new SimpleDeque();
@@ -175,8 +160,19 @@ const ZoomAnimation = () => {
             }
             return dequeue;
         }
+        function updateRaceline({x,y},newBoundaries){
+            const dequeue = [];
+            for (let point of raceline.current) {
+                if (isPointInBounds(point, newBoundaries)) {
+                    dequeue.push(point);
+                } else if (dequeue.length != 0) {
+                    break;
+                }
+            }
+            raceline.current = [...dequeue,[x,y]];
+        }
 
-    }, [boundaries, pointPosition, lineGenerator]);
+    }, [boundaries, carPosition, lineGenerator]);
 
     return (
         <div>
