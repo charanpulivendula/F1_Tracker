@@ -7,7 +7,7 @@ import "react-circular-progressbar/dist/styles.css";
 import { io } from "socket.io-client";
 
 const Speedometer = () => {
-    const [actualSpeed, setActualSpeed] = useState(200);
+    const [actualSpeed, setActualSpeed] = useState(0);
     const [cmdSpeed,setCmdSpeed] = useState(87);
     const [rotation, setRotation] = useState(0);
     const [maxSpeed, setMaxSpeed] = useState(10);

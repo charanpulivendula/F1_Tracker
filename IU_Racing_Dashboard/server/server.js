@@ -107,7 +107,6 @@ udpServer.on('message', (msg) => {
     io.emit('brake',JSON.stringify(latestData.brake))
   }
   if(latestData.racelineIndex != null){
-    console.log(latestData.racelineIndex);
     io.emit('raceorpit',latestData.racelineIndex)
   }
   if(latestData.gear!=null){
@@ -127,6 +126,10 @@ udpServer.on('message', (msg) => {
   }
   if(latestData.engineSpeedRpm!=0){
     io.emit('rpm',latestData.engineSpeedRpm);
+  }
+  if(latestData.trajectory != null){
+    console.log(latestData.trajectory);
+    io.emit('trajectory',latestData.trajectory);
   }
   if(latestData.steering!=null){
     io.emit('steering',JSON.stringify(latestData.steering));

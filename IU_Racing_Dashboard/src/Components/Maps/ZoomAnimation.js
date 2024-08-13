@@ -7,6 +7,7 @@ import Kentucky_boundaries_json from '../../Static/Kentucky_Boundaries.json';
 import kentucky_pit_lane from '../../Static/kentucky_pit_lane.json';
 import SimpleDeque from './SimpleDequeue';
 import { useSelector } from "react-redux";
+import { io } from "socket.io-client";
 
 const ZoomAnimation = () => {
     const ZOOM = 20;  // zoom in '+' //Zoom out '-'
@@ -22,6 +23,7 @@ const ZoomAnimation = () => {
     const [trackLineJson, setTrackLineJson] = useState(null);
     const [trackBoundaries, setTrackBoundaries] = useState(null);
     const [pitLane, setPitLane] = useState([]);
+    const [trajectory,setTrajectory] = useState([]);
     const [boundaries, setBoundaries] = useState({
         topLeft: { x: 0, y: 0 },
         topRight: { x: 0, y: 0 },
@@ -41,7 +43,35 @@ const ZoomAnimation = () => {
     const racePath = useRef([]);
     const pitLanePath = useRef([]);
     const raceline = useRef([]);
-
+    useEffect(() => {
+        const socket = io(process.env.REACT_APP_SERVER_URL);
+    
+        socket.on('connect', () => {
+          console.log('Trajectory Socket connected');
+        });
+    
+        socket.on('disconnect', () => {
+          console.log('Trajectory Socket disconnected');
+        });
+    
+        socket.on('trajectory', (data) => {
+          try {
+            const trajectory_array = data.trajectory;
+            setTrajectory(trajectory_array);
+            console.log(trajectory);
+          } catch (error) {
+            console.error('Error parsing location data:', error);
+          }
+        });
+    
+        socket.on('connect_error', (error) => {
+          console.error('Connection error:', error);
+        });
+    
+        return () => {
+          socket.disconnect();
+        };
+      }, []);
     useEffect(() => {
         // Load and set track data based on mapType
         if (mapDictionary[mapType]) {
@@ -70,7 +100,7 @@ const ZoomAnimation = () => {
 
     const yScale = d3.scaleLinear()
         .domain(yDomain)
-        .range([padding, height - padding]);
+        .range([height - padding, padding]);
 
     const lineGenerator = d3.line()
         .x(d => xScale(d[0]))

@@ -112,7 +112,6 @@ const ErrorTracker = () => {
       .attr('cy', -(errors[2] * 2))
       .attr('r', 4)
       .attr('fill', 'red');
-      console.log(errors[1]);
 
   }, [errors]);
 

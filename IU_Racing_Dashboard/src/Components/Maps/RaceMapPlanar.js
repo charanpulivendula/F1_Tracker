@@ -59,7 +59,7 @@ const RaceMapPlanar = () => {
       const svg = d3.select(svgRef.current);
       svg.selectAll('*').remove(); // Clear previous elements
 
-      const xScale = d3.scaleLinear().domain([bounds.minX - 50, bounds.maxX + 50]).range([550, 0]);
+      const xScale = d3.scaleLinear().domain([bounds.minX - 50, bounds.maxX + 50]).range([0, 550]);
       const yScale = d3.scaleLinear().domain([bounds.minY - 50, bounds.maxY + 50]).range([350,0]);
       const pathGenerator = d3.line()
         .x(d => xScale(d.x))
@@ -143,7 +143,7 @@ const RaceMapPlanar = () => {
   
   useEffect(() => {
     if (carPosition && bounds.minX !== Infinity) {
-      const xScale = d3.scaleLinear().domain([bounds.minX - 50, bounds.maxX + 50]).range([550, 0]);
+      const xScale = d3.scaleLinear().domain([bounds.minX - 50, bounds.maxX + 50]).range([0, 550]);
       const yScale = d3.scaleLinear().domain([bounds.minY - 50, bounds.maxY + 50]).range([350, 0]);
       const svg = d3.select(svgRef.current);
       svg.selectAll('.car')
