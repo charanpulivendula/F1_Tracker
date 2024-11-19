@@ -18,7 +18,6 @@ Clone the repository from `https://gitlab.com/iu-vail/iu-racing/ui-ux/IU_Racing_
   1) run `npm install` (first time for installing dependencies)
   2) run `npm start` from the tip of the *** IU_Racing_Dashboard/IU_Racing_Dashboard ***
   3) Check errors in the console
-  4) Automatically opens browser with localhost:3000 or type `http://localhost:3000` in browser
 
 ## Backend
   1) Go to another terminal, Go to path {IU_Racing_Dashboard}/IU_Racing_Dashboard/Server
