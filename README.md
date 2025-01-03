@@ -94,16 +94,6 @@ Efficient Data Handling: Use of ProtoBuf ensures efficient serialization and des
 
 
 
-# Starting_Point
-  - index.js is the starting point of react App followed by App.js.
-  - Components are the building blocks of react which is constructed as a tree with parent and child nodes in the browser which follows one direction flow.
-  - **npm start** or **node index.js** for starting react App in the root directory
-  - **npm install** dependencies are installed and stored in node_modules while metadata is stored in **package.json and package-lock.json**
-  - *.env* file has environment variables for the app.
-  - *.dist* is only for production
-  - *public* for static html files
-  - *Server* for [server](#Server) 
-
 # Styling
   - tailwindcss primary used for styling(refer to https://tailwindcss.com/docs/installation)
   - global styling - **index.css and app.css**
