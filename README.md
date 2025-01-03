@@ -4,70 +4,9 @@
  Formula1 dashboard for a Formula1 car involves integrating various technologies to track and display real-time data such as speed, location, throttle, brake, steering angle, and tire temperature. Here's an overview of the components and their interactions:
 
 # prereq
-1) Node JS (`sudo apt install nodejs`)(check if installed `node -v`)
+1) Node JS (`sudo apt install node js)(check if installed `node -v`)
 2) VSCode(recommended)
-3) Stable internet Connection
-
-# instructions for setup:
-Clone the repository from `https://gitlab.com/iu-vail/iu-racing/ui-ux/IU_Racing_Dashboard`
-
-1) Requires 3 terminals for setting up.
-2) Make Sure ENVIRONMENT VARIABLES file is present or place it in root *** IU_Racing_Dashboard/IU_Racing_Dashboard *** as *.env*
-3) Print() --> Console.log(val)
-## Front End
-  1) run `npm install` (first time for installing dependencies)
-  2) run `npm start` from the tip of the *** IU_Racing_Dashboard/IU_Racing_Dashboard ***
-  3) Check errors in the console
-
-## Backend
-  1) Go to another terminal
-  2) Run `node server.js` on this path.
-  3) Check for any errors
-  4) Should display the ports listening-> Server 8080 
-                              listening-> UDP Server IP:9876(acting as client to ros_backend)
-                              Sending -> BaseStation_IP:9877(in progress)
-  5) Topic values can be logged to console here
-
-## Ros_Backend
-  1) Clone the `https://gitlab.com/iu-vail/iu-racing/ui-ux/ros_backend` repo
-  2) The ros_backend.py has all the subscriptions to the required topics.
-  3) Source the terminal for the simulator/car's setup.bash
-  4) run `python3 ros_backend.py` and check for errors
-  5) This starts listening to topics and send udp_packets to Backend of dashboard
-
-## Google Protobuffers
-1) protobuffers helps us for data serialization and data deserialization
-2) Language independent
-3) write a .proto file that should be equal on both the communicating endpoints
-   {
-    syntax = "proto3";
-    message RacecarData {
-      Speed speed = 1
-      Tire tire_temp = 2
-      .
-      .
-      .
-    }
-    message Control{
-      Stop stop = 1
-    }
-   }
-4) Compile the .proto file on their respective end points
-   - for python : `protoc --python_out=. racing.proto`
-   - for JavaScript : `protoc --js_out=import_style=commonjs,binary:. ./racing_data.proto`
-5) Import the proto object, Populate the fields, Encode and Decode functions for serialization and deserialization into     buffers
-6) Send the buffer data through the respective UDP ports
-7) More Info https://protobuf.dev/overview/
-
-
-# Trouble Shooting
-1) (optional if there is no communication from front end to backend) checking for port assignment in the linux system :
-     `sudo iptables -L INPUT -v -n --line-numbers`
-2) Assigning port manually 
-      `udo iptables -A INPUT -p udp --dport 9876 -j ACCEPT`
-3) errors in google maps
-   - check for internet
-   - check for .env file in the path
+3) Stable Internet Connection
 
 
 ## Available Scripts
@@ -76,7 +15,7 @@ Go to the project directory, you can run:
 
 ## `npm install` or `npm install ModuleName`
 
-Installing all the dependencies at once or installing by module.
+Install all the dependencies at once or install them by module.
 can be viewed in Package.json
 
 ## `npm start`
@@ -150,23 +89,10 @@ Efficient Data Handling: Use of ProtoBuf ensures efficient serialization and des
 - *Car Sensor Data:* Sensors on the car collect data on speed, location, throttle, brake, steering angle, and tire temperature.
 - *ROS2 Publication:* Data is published to ROS2 topics, serialized using ProtoBuf.
 - *Backend Server:* Node.js server receives serialized data, deserializes it, and processes it.
-- *Socket.IO* Communication: Processed data is sent to the frontend via Socket.IO.
+- *Socket.IO* Communication: Processed data is sent to the front end via Socket.IO.
 - *Frontend Visualization:* React frontend receives data, updates visualizations (D3.js), and displays the car's location on a Google Map.
 
-## Workflow Diagram
 
-![Work Flow Diagram](IU_Racing_Dashboard/src/Static/Architecture.png)
-
-# Index
-1) [Go to Styling](#Styling)
-2) [Go to Starting Point of User Interface](#Starting_Point)
-3) [Go to Source Files](#source_files)
-4) [Go to Component_Stack](#Component_Stack)
-5) [Go to Server](#Server)
-6) [Go to Protobuffers](#Protobuffers)
-7) [Go to Endpoints](#Endpoints)
-8) [Go to Connection and Communication](#Connection_and_Communication)
-9) [Go to ROS2_topics](#ROS2_topics)
 
 # Starting_Point
   - index.js is the starting point of react App followed by App.js.
@@ -183,34 +109,6 @@ Efficient Data Handling: Use of ProtoBuf ensures efficient serialization and des
   - global styling - **index.css and app.css**
   - If you want to create new stylesheet, do it in *dashboard/src/styles*
 
-# source_files
-
-  - *Assets* for all the static images
-  - *Static* for static data files (Eg: CSV)
-  - *Styles* refer to [Styling](#styling)
-  - *Components* has the UI for each component(Eg speedometer, tyre temerature) refer to [Component_Stack](#Component_Stack)
-
-# Component_Stack
-  ![Component Tree](IU_Racing_Dashboard/image.png)
-  - Components are building blocks of UI. we are using react components.
-  - All Components are set to be in /src/components directory
-  - Entry point src/components/Dashboard(.js)
-    - This Component acts as a root of all the Racing Components.
-  
-  - *Controls* has 3 parts: 
-    - Speedometer (Speedometer, ChangingProgressProvider)
-    - Controls(Controls, Controllables, ControlMeter)
-        - brake, throttle, comm., gear, states, heartbeat, tyre_temperature.
-    - Temperature and state(TempState and Temperature)
-
-  - *Maps* has 2 parts:
-    - RaceMap
-        - Google Map(GMap)
-        - RaceMap with planner points(RaceMapPlanar, Zoom_Animation)
-    - Mode and Status (ModeStatus, Connection)
-  - *Miscellaneous*
-    - PopUpMessage
-  - *Overview* has FlagData, LapData, OpponentCard, Overview
 
 
 # Server
