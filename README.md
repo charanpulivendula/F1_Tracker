@@ -1,7 +1,7 @@
-# Getting Started with IU Racing Dashboard
+# Getting Started with Formula 1 Tracker
 
 # Overview
- Racing dashboard for an autonomous racing car involves integrating various technologies to track and display real-time data such as speed, location, throttle, brake, steering angle, and tire temperature. Here's an overview of the components and their interactions:
+ Formula1 dashboard for a Formula1 car involves integrating various technologies to track and display real-time data such as speed, location, throttle, brake, steering angle, and tire temperature. Here's an overview of the components and their interactions:
 
 # prereq
 1) Node JS (`sudo apt install nodejs`)(check if installed `node -v`)
@@ -20,7 +20,7 @@ Clone the repository from `https://gitlab.com/iu-vail/iu-racing/ui-ux/IU_Racing_
   3) Check errors in the console
 
 ## Backend
-  1) Go to another terminal, Go to path {IU_Racing_Dashboard}/IU_Racing_Dashboard/Server
+  1) Go to another terminal
   2) Run `node server.js` on this path.
   3) Check for any errors
   4) Should display the ports listening-> Server 8080 
@@ -117,7 +117,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ### Data Collection:
 
-The autonomous racing car is equipped with various sensors to measure speed, location, throttle position, brake pressure, steering angle, and tire temperature.
+The Formula1 racing car is equipped with various sensors to measure speed, location, throttle position, brake pressure, steering angle, and tire temperature.
 ROS2 nodes are responsible for collecting data from these sensors and publishing it to relevant topics.
 
 ### Data Serialization:
