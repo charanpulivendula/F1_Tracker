@@ -1,4 +1,4 @@
-# Getting Started with IU Racing Dashboard
+# Getting Started with F1_Tracker
 
 # Overview
  Formula1 dashboard for a racing car involves integrating various technologies to track and display real-time data such as speed, location, throttle, brake, steering angle, and tire temperature. Here's an overview of the components and their interactions:
